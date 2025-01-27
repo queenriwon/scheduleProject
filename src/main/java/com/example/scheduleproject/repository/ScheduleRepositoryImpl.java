@@ -47,7 +47,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        Todo result = jdbcTemplate.query("select * from todos where id = ?", todosRowMapper(), key).get(0);
+        Todo result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), key).get(0);
 
         return new TodoResponseDto(key.longValue(), result.getName(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
     }
@@ -80,13 +80,29 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public List<TodoResponseDto> findTodoAll() {
+        return jdbcTemplate.query("select * from todos", todoResponseDtoRowMapper());
+    }
+
+    @Override
     public TodoResponseDto findTodoByIdElseThrow(Long id) {
         List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoResponseDtoRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 id = " + id));
     }
 
-    private RowMapper<Todo> todosRowMapper() {
+    @Override
+    public int updateNameAndTodo(Long id, String name, String todo, String password) {
+
+        String storedPassword = jdbcTemplate.queryForObject("select password from todos where id = ?", String.class, id);
+
+        if (!storedPassword.equals(password))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 확인");
+
+        return jdbcTemplate.update("update todos set name = ?, todo = ? where id = ?", name, todo, id);
+    }
+
+    private RowMapper<Todo> todoRowMapper() {
         return new RowMapper<Todo>() {
             @Override
             public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {

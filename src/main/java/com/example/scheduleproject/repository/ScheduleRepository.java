@@ -14,6 +14,10 @@ public interface ScheduleRepository {
 
     List<TodoResponseDto> findTodoByUpdatedAt(String updatedAtFrom, String updatedAtTo);
 
+    List<TodoResponseDto> findTodoAll();
+
     TodoResponseDto findTodoByIdElseThrow(Long id);
+
+    int updateNameAndTodo(Long id, String name, String todo, String password);
 
 }

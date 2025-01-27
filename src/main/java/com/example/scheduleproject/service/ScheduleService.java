@@ -10,5 +10,9 @@ public interface ScheduleService {
 
     List<TodoResponseDto> findTodoByNameOrUpdatedAt(String name, String updatedAtFrom, String updatedAtTo);
 
+    List<TodoResponseDto> findTodoAll();
+
     TodoResponseDto findTodoById(Long id);
+
+    TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password);
 }

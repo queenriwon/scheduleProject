@@ -30,8 +30,21 @@ public class ScheduleController {
         return scheduleService.findTodoByNameOrUpdatedAt(dto.getName(), dto.getUpdatedAtFrom(), dto.getUpdatedAtTo());
     }
 
+    @GetMapping("/read-all")
+    public List<TodoResponseDto> findTodoAll() {
+        return scheduleService.findTodoAll();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TodoResponseDto> findTodoById(@PathVariable Long id) {
         return new ResponseEntity<>(scheduleService.findTodoById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TodoResponseDto> updateNameAndTodo(
+            @PathVariable Long id,
+            @RequestBody TodoRequestDto dto
+    ) {
+        return new ResponseEntity<>(scheduleService.updateNameAndTodo(id, dto.getName(), dto.getTodo(), dto.getPassword()), HttpStatus.OK);
     }
 }

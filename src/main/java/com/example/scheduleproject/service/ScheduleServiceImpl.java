@@ -4,10 +4,9 @@ import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.repository.ScheduleRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import com.example.scheduleproject.entity.Todo;
 
 import java.util.List;
 
@@ -49,7 +48,25 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<TodoResponseDto> findTodoAll() {
+        return scheduleRepository.findTodoAll();
+    }
+
+    @Override
     public TodoResponseDto findTodoById(Long id) {
+        return scheduleRepository.findTodoByIdElseThrow(id);
+    }
+
+    @Override
+    public TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password) {
+
+        if (name == null || todo == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "항상 필수값임");
+        }
+
+        int updatedrows = scheduleRepository.updateNameAndTodo(id, name, todo, password);
+        if (updatedrows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을수 없는 id" + id);
+
         return scheduleRepository.findTodoByIdElseThrow(id);
     }
 
