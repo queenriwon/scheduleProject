@@ -49,8 +49,10 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodoById(@PathVariable Long id) {
-        scheduleService.deleteTodoById(id);
+    public ResponseEntity<Void> deleteTodoById(
+            @PathVariable Long id,
+            @RequestBody TodoRequestDto dto) {
+        scheduleService.deleteTodoById(id, dto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

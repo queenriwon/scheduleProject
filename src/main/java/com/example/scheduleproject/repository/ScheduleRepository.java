@@ -20,6 +20,6 @@ public interface ScheduleRepository {
 
     int updateNameAndTodo(Long id, String name, String todo, String password);
 
-    int deleteTodoById(Long id);
+    void deleteTodoById(Long id, String password);
 
 }

@@ -16,5 +16,5 @@ public interface ScheduleService {
 
     TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password);
 
-    void deleteTodoById(Long id);
+    void deleteTodoById(Long id, String password);
 }

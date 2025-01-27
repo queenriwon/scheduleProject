@@ -6,6 +6,7 @@ import com.example.scheduleproject.repository.ScheduleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findTodoByIdElseThrow(id);
     }
 
+    @Transactional
     @Override
     public TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password) {
 
@@ -70,12 +72,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findTodoByIdElseThrow(id);
     }
 
+    @Transactional
     @Override
-    public void deleteTodoById(Long id) {
-        int deleterows = scheduleRepository.deleteTodoById(id);
-        if (deleterows == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public void deleteTodoById(Long id, String password) {
+        scheduleRepository.deleteTodoById(id, password);
     }
 
     private boolean updatedAtValidation(String updatedAtFrom, String updatedAtTo) {

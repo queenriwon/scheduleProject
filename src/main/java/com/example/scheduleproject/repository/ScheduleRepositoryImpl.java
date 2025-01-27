@@ -2,6 +2,8 @@ package com.example.scheduleproject.repository;
 
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
+import com.example.scheduleproject.entity.Todo;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
-import com.example.scheduleproject.entity.Todo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -103,8 +104,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public int deleteTodoById(Long id) {
-        return jdbcTemplate.update("delete from todos where id = ?", id);
+    public void deleteTodoById(Long id, String password) {
+        try {
+            String storedPassword = jdbcTemplate.queryForObject("select password from todos where id = ?", String.class, id);
+            if (!storedPassword.equals(password))
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 확인");
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 id 값");
+        }
+        jdbcTemplate.update("delete from todos where id = ?", id);
     }
 
     private RowMapper<Todo> todoRowMapper() {
