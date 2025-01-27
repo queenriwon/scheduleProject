@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class todoResponseDto {
+public class TodoResponseDto {
     private Long id;
     private String name;
     private String todo;

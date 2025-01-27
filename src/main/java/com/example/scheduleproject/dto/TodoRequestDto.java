@@ -1,6 +1,9 @@
 package com.example.scheduleproject.dto;
 
-public class todoRequestDto {
+import lombok.Getter;
+
+@Getter
+public class TodoRequestDto {
     private String name;
     private String todo;
     private String password;
