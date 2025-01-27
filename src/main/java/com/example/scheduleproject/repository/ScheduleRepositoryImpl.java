@@ -3,6 +3,7 @@ package com.example.scheduleproject.repository;
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 @Repository
 public class ScheduleRepositoryImpl implements ScheduleRepository {
 
@@ -29,7 +31,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public TodoResponseDto createTodo(TodoRequestDto dto) {
 
-        int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users WHERE email = ?", Integer.class, dto.getEmail());
+        int count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM users WHERE email = ?", Integer.class, dto.getEmail());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
         String nowTime = sdf.format(now);
@@ -70,46 +72,54 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         return new TodoResponseDto(key.longValue(), dto.getName(), dto.getEmail(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
     }
 
+
     @Override
     public List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo) {
 
-        StringBuilder sb = new StringBuilder("select * from todos where 1=1");
+        StringBuilder sb = new StringBuilder(
+                "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
+                        " from todos a join users b on a.user_id = b.id where 1=1");
         List<Object> list = new ArrayList<>();
 
         if (name != null) {
-            sb.append(" name = ?");
-            list.add(name);
+            Long userId = jdbcTemplate.queryForObject("select id from users where name = ?", Long.class, name);
+            sb.append(" and a.user_id = ?");
+            list.add(userId);
         }
 
         if (updatedAtFrom != null && updatedAtTo != null) {
-            sb.append(" and (date(?) <= date(updated_at) and date(updated_at) <= date(?))");
+            sb.append(" and (a.updated_at between ? and ?)");
             list.add(updatedAtFrom);
             list.add(updatedAtTo);
         } else if (updatedAtFrom != null) {
-            sb.append(" and (date(?) <= date(updated_at)");
+            sb.append(" and a.updated_at >= ?");
             list.add(updatedAtFrom);
         } else if (updatedAtTo != null) {
-            sb.append(" and (date(updated_at) <= date(?))");
+            sb.append(" and a.updated_at <= ?");
             list.add(updatedAtTo);
         }
 
-        sb.append("order by updated_at desc");
+        sb.append(" order by updated_at desc");
 
         List<TodoResponseDto> result = jdbcTemplate.query(sb.toString(),
                 todoResponseDtoRowMapper(), list.toArray());
 
-        result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
         return result;
     }
 
     @Override
     public List<TodoResponseDto> findTodoAll() {
-        return jdbcTemplate.query("select * from todos order by updated_at desc", todoResponseDtoRowMapper());
+        return jdbcTemplate.query(
+                "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
+                        " from todos a join users b on a.user_id = b.id" +
+                        " order by updated_at desc", todoResponseDtoRowMapper());
     }
 
     @Override
     public TodoResponseDto findTodoByIdElseThrow(Long id) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoResponseDtoRowMapper(), id);
+        List<TodoResponseDto> result = jdbcTemplate.query(
+                "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
+                " from todos a join users b on a.user_id = b.id where a.id = ?", todoResponseDtoRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 id = " + id));
     }

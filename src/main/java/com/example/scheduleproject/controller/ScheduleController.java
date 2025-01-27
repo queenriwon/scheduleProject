@@ -3,13 +3,14 @@ package com.example.scheduleproject.controller;
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.service.ScheduleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.scheduleproject.dto.TodoGetRequestDto;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/schedules")
 public class ScheduleController {
@@ -27,9 +28,11 @@ public class ScheduleController {
 
     @GetMapping
     public List<TodoResponseDto> findTodoByNameOrUpdatedAt(
-            @ModelAttribute TodoGetRequestDto dto
+            @RequestParam String name,
+            @RequestParam String updatedAtFrom,
+            @RequestParam String updatedAtTo
     ) {
-        return scheduleService.findTodoByNameOrUpdatedAt(dto.getName(), dto.getUpdatedAtFrom(), dto.getUpdatedAtTo());
+        return scheduleService.findTodoByNameOrUpdatedAt(name, updatedAtFrom, updatedAtTo);
     }
 
     @GetMapping("/read-all")
