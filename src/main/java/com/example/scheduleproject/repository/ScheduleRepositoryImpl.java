@@ -15,10 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class ScheduleRepositoryImpl implements ScheduleRepository {
@@ -55,26 +52,29 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where name = ? and (date(?) <= date(updated_at) and date(updated_at) <= date(?))",
-                todoResponseDtoRowMapper(), name, updatedAtFrom, updatedAtTo);
 
-        result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
-        return result;
-    }
+        StringBuilder sb = new StringBuilder("select * from todos where 1=1");
+        List<Object> list = new ArrayList<>();
 
-    @Override
-    public List<TodoResponseDto> findTodoByName(String name) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where name = ?",
-                todoResponseDtoRowMapper(), name);
+        if (name != null) {
+            sb.append(" name = ?");
+            list.add(name);
+        }
 
-        result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
-        return result;
-    }
+        if (updatedAtFrom != null && updatedAtTo != null) {
+            sb.append(" and (date(?) <= date(updated_at) and date(updated_at) <= date(?))");
+            list.add(updatedAtFrom);
+            list.add(updatedAtTo);
+        } else if (updatedAtFrom != null) {
+            sb.append(" and (date(?) <= date(updated_at)");
+            list.add(updatedAtFrom);
+        } else if (updatedAtTo != null) {
+            sb.append(" and (date(updated_at) <= date(?))");
+            list.add(updatedAtTo);
+        }
 
-    @Override
-    public List<TodoResponseDto> findTodoByUpdatedAt(String updatedAtFrom, String updatedAtTo) {
-        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where date(?) <= date(updated_at) and date(updated_at) <= date(?)",
-                todoResponseDtoRowMapper(), updatedAtFrom, updatedAtTo);
+        List<TodoResponseDto> result = jdbcTemplate.query(sb.toString(),
+                todoResponseDtoRowMapper(), list.toArray());
 
         result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
         return result;

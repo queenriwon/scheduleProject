@@ -10,10 +10,6 @@ public interface ScheduleRepository {
 
     List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo);
 
-    List<TodoResponseDto> findTodoByName(String name);
-
-    List<TodoResponseDto> findTodoByUpdatedAt(String updatedAtFrom, String updatedAtTo);
-
     List<TodoResponseDto> findTodoAll();
 
     TodoResponseDto findTodoByIdElseThrow(Long id);

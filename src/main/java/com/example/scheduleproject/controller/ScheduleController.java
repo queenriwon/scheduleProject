@@ -26,7 +26,9 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public List<TodoResponseDto> findTodoByNameOrUpdatedAt(@RequestBody TodoGetRequestDto dto) {
+    public List<TodoResponseDto> findTodoByNameOrUpdatedAt(
+            @ModelAttribute TodoGetRequestDto dto
+    ) {
         return scheduleService.findTodoByNameOrUpdatedAt(dto.getName(), dto.getUpdatedAtFrom(), dto.getUpdatedAtTo());
     }
 
