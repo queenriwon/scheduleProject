@@ -2,7 +2,7 @@ package com.example.scheduleproject.repository;
 
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
-import com.example.scheduleproject.entity.ScheduleEntity;
+import com.example.scheduleproject.entity.TodosEntity;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,14 +29,45 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public TodoResponseDto createTodo(TodoRequestDto dto) {
 
-        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
-        int count = jdbcTemplate.queryForObject(sql, Integer.class, dto.getEmail());
+        int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users WHERE email = ?", Integer.class, dto.getEmail());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        String nowTime = sdf.format(now);
+
+        Number userId;
 
         if (count > 0) {
-            return addTodoForExistingUser(dto);
+            String sql = "SELECT id FROM users WHERE email = ?";
+            userId = jdbcTemplate.queryForObject(sql, Long.class, dto.getEmail());
+
         } else {
-            return addUserAndTodo(dto);
+            SimpleJdbcInsert jdbcInsertUser = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcInsertUser.withTableName("users").usingGeneratedKeyColumns("id");
+
+            Map<String, Object> parametersUser = new HashMap<>();
+            parametersUser.put("name", dto.getName());
+            parametersUser.put("email", dto.getEmail());
+            parametersUser.put("created_at", nowTime);
+            parametersUser.put("updated_at", nowTime);
+
+            userId = jdbcInsertUser.executeAndReturnKey(new MapSqlParameterSource(parametersUser));
         }
+
+        SimpleJdbcInsert jdbcInsertTodos = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsertTodos.withTableName("todos").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("user_id", userId.longValue());
+        parameters.put("todo", dto.getTodo());
+        parameters.put("password", dto.getPassword());
+        parameters.put("created_at", nowTime);
+        parameters.put("updated_at", nowTime);
+
+        Number key = jdbcInsertTodos.executeAndReturnKey(new MapSqlParameterSource(parameters));
+
+        TodosEntity result = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), key).get(0);
+
+        return new TodoResponseDto(key.longValue(), dto.getName(), dto.getEmail(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
     }
 
     @Override
@@ -105,72 +136,12 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         jdbcTemplate.update("delete from todos where id = ?", id);
     }
 
-    private TodoResponseDto addTodoForExistingUser(TodoRequestDto dto) {
-        String sql = "SELECT id FROM users WHERE email = ?";
-        Long userId = jdbcTemplate.queryForObject(sql, Long.class, dto.getEmail());
 
-        SimpleJdbcInsert jdbcInsertTodos = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsertTodos.withTableName("todos").usingGeneratedKeyColumns("id");
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date now = new Date();
-        String nowTime = sdf.format(now);
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("user_id", userId);
-        parameters.put("todo", dto.getTodo());
-        parameters.put("password", dto.getPassword());
-        parameters.put("created_at", nowTime);
-        parameters.put("updated_at", nowTime);
-
-        Number key = jdbcInsertTodos.executeAndReturnKey(new MapSqlParameterSource(parameters));
-
-        ScheduleEntity result = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), key).get(0);
-
-        return new TodoResponseDto(key.longValue(), dto.getName(), dto.getEmail(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
-    }
-
-
-    private TodoResponseDto addUserAndTodo(TodoRequestDto dto) {
-        SimpleJdbcInsert jdbcInsertUser = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsertUser.withTableName("users").usingGeneratedKeyColumns("id");
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date now = new Date();
-        String nowTime = sdf.format(now);
-
-        Map<String, Object> parametersUser = new HashMap<>();
-        parametersUser.put("name", dto.getName());
-        parametersUser.put("email", dto.getEmail());
-        parametersUser.put("created_at", nowTime);
-        parametersUser.put("updated_at", nowTime);
-
-        Number userId = jdbcInsertUser.executeAndReturnKey(new MapSqlParameterSource(parametersUser));
-
-        SimpleJdbcInsert jdbcInsertTodos = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsertTodos.withTableName("todos").usingGeneratedKeyColumns("id");
-
-        Map<String, Object> parametersTodo = new HashMap<>();
-        parametersTodo.put("user_id", userId.longValue());
-        parametersTodo.put("todo", dto.getTodo());
-        parametersTodo.put("password", dto.getPassword());
-        parametersTodo.put("created_at", nowTime);
-        parametersTodo.put("updated_at", nowTime);
-
-        Number todoKey = jdbcInsertTodos.executeAndReturnKey(new MapSqlParameterSource(parametersTodo));
-
-        ScheduleEntity result = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), todoKey).get(0);
-
-        // 반환할 응답 DTO 생성
-        return new TodoResponseDto(todoKey.longValue(), dto.getName(), dto.getEmail(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
-    }
-
-
-    private RowMapper<ScheduleEntity> todoRowMapper() {
-        return new RowMapper<ScheduleEntity>() {
+    private RowMapper<TodosEntity> todoRowMapper() {
+        return new RowMapper<TodosEntity>() {
             @Override
-            public ScheduleEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new ScheduleEntity(
+            public TodosEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new TodosEntity(
                         rs.getLong("id"),
                         rs.getLong("user_id"),
                         rs.getString("todo"),

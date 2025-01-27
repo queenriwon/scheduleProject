@@ -27,6 +27,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (!(dto.getPassword().equals(dto.getPasswordCheck())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password != PasswordCheck");
 
+
+
         return scheduleRepository.createTodo(dto);
     }
 
