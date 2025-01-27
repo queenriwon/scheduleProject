@@ -131,7 +131,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         if (!storedPassword.equals(password))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 확인");
 
-        return jdbcTemplate.update("update todos set name = ?, todo = ? where id = ?", name, todo, id);
+        Long userId = jdbcTemplate.queryForObject("select user_id from todos where id = ?", Long.class, id);
+        jdbcTemplate.update("update users set name = ? where id = ?", name, userId);
+
+        return jdbcTemplate.update("update todos set todo = ? where user_id = ?", todo, userId);
     }
 
     @Override
