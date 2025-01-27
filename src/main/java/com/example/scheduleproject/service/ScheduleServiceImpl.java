@@ -53,8 +53,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "항상 필수값임");
         }
 
-        int updatedrows = scheduleRepository.updateNameAndTodo(id, name, todo, password);
-        if (updatedrows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을수 없는 id" + id);
+        int updatedRows = scheduleRepository.updateNameAndTodo(id, name, todo, password);
+        if (updatedRows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을수 없는 id" + id);
 
         return scheduleRepository.findTodoByIdElseThrow(id);
     }
