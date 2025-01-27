@@ -102,6 +102,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         return jdbcTemplate.update("update todos set name = ?, todo = ? where id = ?", name, todo, id);
     }
 
+    @Override
+    public int deleteTodoById(Long id) {
+        return jdbcTemplate.update("delete from todos where id = ?", id);
+    }
+
     private RowMapper<Todo> todoRowMapper() {
         return new RowMapper<Todo>() {
             @Override

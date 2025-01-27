@@ -47,4 +47,10 @@ public class ScheduleController {
     ) {
         return new ResponseEntity<>(scheduleService.updateNameAndTodo(id, dto.getName(), dto.getTodo(), dto.getPassword()), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTodoById(@PathVariable Long id) {
+        scheduleService.deleteTodoById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

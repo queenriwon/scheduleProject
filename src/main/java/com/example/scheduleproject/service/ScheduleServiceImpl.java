@@ -70,6 +70,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findTodoByIdElseThrow(id);
     }
 
+    @Override
+    public void deleteTodoById(Long id) {
+        int deleterows = scheduleRepository.deleteTodoById(id);
+        if (deleterows == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
     private boolean updatedAtValidation(String updatedAtFrom, String updatedAtTo) {
         return !((updatedAtFrom != null) ^ (updatedAtTo != null));
     }
