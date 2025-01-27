@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class Todos {
+public class Todo {
     private Long id;
     private String name;
     private String todo;
@@ -13,7 +13,7 @@ public class Todos {
     private String createdAt;
     private String updatedAt;
 
-    public Todos(String name, String todo, String password, String createdAt, String updatedAt) {
+    public Todo(String name, String todo, String password, String createdAt, String updatedAt) {
         this.name = name;
         this.todo = todo;
         this.password = password;
@@ -21,7 +21,7 @@ public class Todos {
         this.updatedAt = updatedAt;
     }
 
-    public Todos(String name, String todo, String password) {
+    public Todo(String name, String todo, String password) {
         this.name = name;
         this.todo = todo;
         this.password = password;

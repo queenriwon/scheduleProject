@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.scheduleproject.dto.TodoGetRequestDto;
+
 import java.util.List;
 
 @RestController
@@ -20,12 +21,17 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto){
+    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto) {
         return new ResponseEntity<>(scheduleService.createTodo(dto), HttpStatus.CREATED);
     }
 
     @GetMapping
     public List<TodoResponseDto> findTodoByNameOrUpdatedAt(@RequestBody TodoGetRequestDto dto) {
         return scheduleService.findTodoByNameOrUpdatedAt(dto.getName(), dto.getUpdatedAtFrom(), dto.getUpdatedAtTo());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TodoResponseDto> findTodoById(@PathVariable Long id) {
+        return new ResponseEntity<>(scheduleService.findTodoById(id), HttpStatus.OK);
     }
 }

@@ -2,27 +2,25 @@ package com.example.scheduleproject.repository;
 
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
-import com.example.scheduleproject.entity.Todos;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import java.util.ArrayList;
+import com.example.scheduleproject.entity.Todo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
-public class ScheduleRepositoryImpl implements ScheduleRepository{
+public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -39,17 +37,17 @@ public class ScheduleRepositoryImpl implements ScheduleRepository{
         Date now = new Date();
         String nowTime = sdf.format(now);
 
-        Todos todos = new Todos(dto.getName(), dto.getTodo(), dto.getPassword());
+        Todo todo = new Todo(dto.getName(), dto.getTodo(), dto.getPassword());
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", todos.getName());
-        parameters.put("todo", todos.getTodo());
-        parameters.put("password", todos.getPassword());
+        parameters.put("name", todo.getName());
+        parameters.put("todo", todo.getTodo());
+        parameters.put("password", todo.getPassword());
         parameters.put("created_at", nowTime);
         parameters.put("updated_at", nowTime);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        Todos result = jdbcTemplate.query("select * from todos where id = ?", todosRowMapper(), key).get(0);
+        Todo result = jdbcTemplate.query("select * from todos where id = ?", todosRowMapper(), key).get(0);
 
         return new TodoResponseDto(key.longValue(), result.getName(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
     }
@@ -81,11 +79,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository{
         return result;
     }
 
-    private RowMapper<Todos> todosRowMapper() {
-        return new RowMapper<Todos>() {
+    @Override
+    public TodoResponseDto findTodoByIdElseThrow(Long id) {
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where id = ?", todoResponseDtoRowMapper(), id);
+
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 id = " + id));
+    }
+
+    private RowMapper<Todo> todosRowMapper() {
+        return new RowMapper<Todo>() {
             @Override
-            public Todos mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Todos(
+            public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Todo(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("todo"),

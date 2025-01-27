@@ -7,11 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import com.example.scheduleproject.entity.Todo;
+
 import java.util.List;
 
 @Slf4j
 @Service
-public class ScheduleServiceImpl implements ScheduleService{
+public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
@@ -23,7 +25,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     public TodoResponseDto createTodo(TodoRequestDto dto) {
 
         if (!(dto.getPassword().equals(dto.getPasswordCheck())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password != PasswordCheck");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password != PasswordCheck");
 
         return scheduleRepository.createTodo(dto);
     }
@@ -46,7 +48,12 @@ public class ScheduleServiceImpl implements ScheduleService{
         }
     }
 
-    private boolean updatedAtValidation(String updatedAtFrom, String updatedAtTo){
+    @Override
+    public TodoResponseDto findTodoById(Long id) {
+        return scheduleRepository.findTodoByIdElseThrow(id);
+    }
+
+    private boolean updatedAtValidation(String updatedAtFrom, String updatedAtTo) {
         return !((updatedAtFrom != null) ^ (updatedAtTo != null));
     }
 
