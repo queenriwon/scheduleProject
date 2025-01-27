@@ -1,8 +1,7 @@
 package com.example.scheduleproject.repository;
 
-import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
-import com.example.scheduleproject.entity.Todo;
+import com.example.scheduleproject.entity.ScheduleEntity;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,10 +11,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ScheduleRepositoryImpl implements ScheduleRepository {
@@ -27,7 +30,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public TodoResponseDto createTodo(TodoRequestDto dto) {
+    public TodoResponseDto createTodo(ScheduleEntity scheduleEntity) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("todos").usingGeneratedKeyColumns("id");
 
@@ -35,7 +38,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         Date now = new Date();
         String nowTime = sdf.format(now);
 
-        Todo todo = new Todo(dto.getName(), dto.getTodo(), dto.getPassword());
+        ScheduleEntity todo = new ScheduleEntity(scheduleEntity.getName(), scheduleEntity.getTodo(), scheduleEntity.getPassword());
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", todo.getName());
         parameters.put("todo", todo.getTodo());
@@ -44,8 +47,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         parameters.put("updated_at", nowTime);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-
-        Todo result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), key).get(0);
+        ScheduleEntity result = jdbcTemplate.query("select * from todos where id = ?", todoRowMapper(), key).get(0);
 
         return new TodoResponseDto(key.longValue(), result.getName(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
     }
@@ -94,7 +96,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public int updateNameAndTodo(Long id, String name, String todo, String password) {
-
         String storedPassword = jdbcTemplate.queryForObject("select password from todos where id = ?", String.class, id);
 
         if (!storedPassword.equals(password))
@@ -115,11 +116,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         jdbcTemplate.update("delete from todos where id = ?", id);
     }
 
-    private RowMapper<Todo> todoRowMapper() {
-        return new RowMapper<Todo>() {
+    private RowMapper<com.example.scheduleproject.entity.ScheduleEntity> todoRowMapper() {
+        return new RowMapper<com.example.scheduleproject.entity.ScheduleEntity>() {
             @Override
-            public Todo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Todo(
+            public com.example.scheduleproject.entity.ScheduleEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new com.example.scheduleproject.entity.ScheduleEntity(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getString("todo"),

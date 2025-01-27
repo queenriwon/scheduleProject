@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class Todo {
+public class ScheduleEntity {
     private Long id;
     private String name;
     private String todo;
@@ -13,7 +13,7 @@ public class Todo {
     private String createdAt;
     private String updatedAt;
 
-    public Todo(String name, String todo, String password, String createdAt, String updatedAt) {
+    public ScheduleEntity(String name, String todo, String password, String createdAt, String updatedAt) {
         this.name = name;
         this.todo = todo;
         this.password = password;
@@ -21,7 +21,7 @@ public class Todo {
         this.updatedAt = updatedAt;
     }
 
-    public Todo(String name, String todo, String password) {
+    public ScheduleEntity(String name, String todo, String password) {
         this.name = name;
         this.todo = todo;
         this.password = password;

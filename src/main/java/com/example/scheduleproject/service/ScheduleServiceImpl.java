@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import com.example.scheduleproject.entity.ScheduleEntity;
 
 import java.util.List;
 
@@ -23,11 +24,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public TodoResponseDto createTodo(TodoRequestDto dto) {
-
         if (!(dto.getPassword().equals(dto.getPasswordCheck())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password != PasswordCheck");
 
-        return scheduleRepository.createTodo(dto);
+        ScheduleEntity scheduleEntity = new ScheduleEntity(dto.getName(), dto.getTodo(), dto.getPassword());
+        return scheduleRepository.createTodo(scheduleEntity);
     }
 
     @Override
@@ -48,7 +49,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password) {
-
         if (name == null || todo == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "항상 필수값임");
         }
@@ -64,9 +64,4 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void deleteTodoById(Long id, String password) {
         scheduleRepository.deleteTodoById(id, password);
     }
-
-    private boolean updatedAtValidation(String updatedAtFrom, String updatedAtTo) {
-        return !((updatedAtFrom != null) ^ (updatedAtTo != null));
-    }
-
 }
