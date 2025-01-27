@@ -12,6 +12,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+import java.util.ArrayList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,6 +54,33 @@ public class ScheduleRepositoryImpl implements ScheduleRepository{
         return new TodoResponseDto(key.longValue(), result.getName(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
     }
 
+    @Override
+    public List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo) {
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where name = ? and (date(?) <= date(updated_at) and date(updated_at) <= date(?))",
+                todoResponseDtoRowMapper(), name, updatedAtFrom, updatedAtTo);
+
+        result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
+        return result;
+    }
+
+    @Override
+    public List<TodoResponseDto> findTodoByName(String name) {
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where name = ?",
+                todoResponseDtoRowMapper(), name);
+
+        result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
+        return result;
+    }
+
+    @Override
+    public List<TodoResponseDto> findTodoByUpdatedAt(String updatedAtFrom, String updatedAtTo) {
+        List<TodoResponseDto> result = jdbcTemplate.query("select * from todos where date(?) <= date(updated_at) and date(updated_at) <= date(?)",
+                todoResponseDtoRowMapper(), updatedAtFrom, updatedAtTo);
+
+        result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "검색결과를 찾을 수 없음"));
+        return result;
+    }
+
     private RowMapper<Todos> todosRowMapper() {
         return new RowMapper<Todos>() {
             @Override
@@ -60,6 +90,21 @@ public class ScheduleRepositoryImpl implements ScheduleRepository{
                         rs.getString("name"),
                         rs.getString("todo"),
                         rs.getString("password"),
+                        rs.getString("created_at"),
+                        rs.getString("updated_at")
+                );
+            }
+        };
+    }
+
+    private RowMapper<TodoResponseDto> todoResponseDtoRowMapper() {
+        return new RowMapper<TodoResponseDto>() {
+            @Override
+            public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new TodoResponseDto(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("todo"),
                         rs.getString("created_at"),
                         rs.getString("updated_at")
                 );

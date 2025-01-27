@@ -5,10 +5,9 @@ import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import com.example.scheduleproject.dto.TodoGetRequestDto;
+import java.util.List;
 
 @RestController
 @RequestMapping("/schedules")
@@ -23,5 +22,10 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto){
         return new ResponseEntity<>(scheduleService.createTodo(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public List<TodoResponseDto> findTodoByNameOrUpdatedAt(@RequestBody TodoGetRequestDto dto) {
+        return scheduleService.findTodoByNameOrUpdatedAt(dto.getName(), dto.getUpdatedAtFrom(), dto.getUpdatedAtTo());
     }
 }
