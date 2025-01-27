@@ -8,6 +8,7 @@ import lombok.Getter;
 public class TodoResponseDto {
     private Long id;
     private String name;
+    private String email;
     private String todo;
     private String createdAt;
     private String updatedAt;

@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import com.example.scheduleproject.entity.ScheduleEntity;
 
 import java.util.List;
 
@@ -22,13 +21,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.scheduleRepository = scheduleRepository;
     }
 
+    @Transactional
     @Override
     public TodoResponseDto createTodo(TodoRequestDto dto) {
         if (!(dto.getPassword().equals(dto.getPasswordCheck())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password != PasswordCheck");
 
-        ScheduleEntity scheduleEntity = new ScheduleEntity(dto.getName(), dto.getTodo(), dto.getPassword());
-        return scheduleRepository.createTodo(scheduleEntity);
+        return scheduleRepository.createTodo(dto);
     }
 
     @Override
