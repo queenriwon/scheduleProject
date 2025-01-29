@@ -1,14 +1,14 @@
 package com.example.scheduleproject.controller;
 
+import com.example.scheduleproject.dto.PageResponseDto;
 import com.example.scheduleproject.dto.TodoRequestDto;
+import com.example.scheduleproject.dto.TodoRequestGetDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,17 +27,20 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public List<TodoResponseDto> findTodoByNameOrUpdatedAt(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String updatedAtFrom,
-            @RequestParam(required = false) String updatedAtTo
-    ) {
-        return scheduleService.findTodoByNameOrUpdatedAt(name, updatedAtFrom, updatedAtTo);
+    public PageResponseDto<TodoResponseDto> findTodoByNameOrUpdatedAt(
+            @ModelAttribute TodoRequestGetDto dto,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+            ) {
+        return scheduleService.findTodoByNameOrUpdatedAt(dto, page, size);
     }
 
     @GetMapping("/read-all")
-    public List<TodoResponseDto> findTodosAll() {
-        return scheduleService.findTodoAll();
+    public PageResponseDto<TodoResponseDto> findTodosAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return scheduleService.findTodoAll(page, size);
     }
 
     @GetMapping("/{id}")

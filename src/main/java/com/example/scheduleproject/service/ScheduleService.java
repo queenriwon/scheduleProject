@@ -1,16 +1,16 @@
 package com.example.scheduleproject.service;
 
+import com.example.scheduleproject.dto.PageResponseDto;
 import com.example.scheduleproject.dto.TodoRequestDto;
+import com.example.scheduleproject.dto.TodoRequestGetDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
-
-import java.util.List;
 
 public interface ScheduleService {
     TodoResponseDto createTodo(TodoRequestDto dto);
 
-    List<TodoResponseDto> findTodoByNameOrUpdatedAt(String name, String updatedAtFrom, String updatedAtTo);
+    PageResponseDto<TodoResponseDto> findTodoByNameOrUpdatedAt(TodoRequestGetDto dto, int page, int size);
 
-    List<TodoResponseDto> findTodoAll();
+    PageResponseDto<TodoResponseDto> findTodoAll(int page, int size);
 
     TodoResponseDto findTodoById(Long id);
 

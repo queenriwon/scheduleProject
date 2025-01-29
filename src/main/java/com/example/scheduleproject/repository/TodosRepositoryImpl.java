@@ -1,5 +1,6 @@
 package com.example.scheduleproject.repository;
 
+import com.example.scheduleproject.dto.PageResponseDto;
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
@@ -45,45 +46,55 @@ public class TodosRepositoryImpl implements TodosRepository {
     }
 
     @Override
-    public List<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo) {
+    public PageResponseDto<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo, int page, int size) {
         StringBuilder sb = new StringBuilder(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
                         " from todos a join users b on a.user_id = b.id where 1=1");
         List<Object> list = new ArrayList<>();
 
         if (!userIdList.isEmpty()) {
-            sb.append(" and a.user_id IN (?");
-            list.add(userIdList.get(0));
-            for (int i = 1; i < userIdList.size(); i++) {
-                sb.append(", ?");
+            sb.append(" and a.user_id IN (");
+            for (int i = 0; i < userIdList.size(); i++) {
+                sb.append("?");
+                if (i < userIdList.size() - 1) {
+                    sb.append(", ");
+                }
                 list.add(userIdList.get(i));
             }
             sb.append(")");
         }
 
         if (updatedAtFrom != null && updatedAtTo != null) {
-            sb.append(" and (a.updated_at between ? and ?)");
+            sb.append(" and (date(a.updated_at) between ? and ?)");
             list.add(updatedAtFrom);
             list.add(updatedAtTo);
         } else if (updatedAtFrom != null) {
-            sb.append(" and a.updated_at >= ?");
+            sb.append(" and date(a.updated_at) >= ?");
             list.add(updatedAtFrom);
         } else if (updatedAtTo != null) {
-            sb.append(" and a.updated_at <= ?");
+            sb.append(" and date(a.updated_at) <= ?");
             list.add(updatedAtTo);
         }
 
-        sb.append(" order by updated_at desc");
+        int totalElements = jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray()).size();
 
-        return jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray());
+        sb.append(" order by updated_at desc limit ? offset ?");
+        list.add(size);
+        list.add(page * size);
+
+        List<TodoResponseDto> todoResponseDtoList = jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray());
+
+        return new PageResponseDto<>(todoResponseDtoList, page, size, totalElements);
+
     }
 
     @Override
-    public List<TodoResponseDto> findTodoAll() {
-        return jdbcTemplate.query(
+    public PageResponseDto<TodoResponseDto> findTodoAll(int page, int size) {
+        List<TodoResponseDto> todoResponseDtoList = jdbcTemplate.query(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
                         " from todos a join users b on a.user_id = b.id" +
-                        " order by updated_at desc", toRowMapper.todoResponseDtoRowMapper());
+                        " order by updated_at desc limit ? offset ?", toRowMapper.todoResponseDtoRowMapper(), size, page * size);
+        return new PageResponseDto<>(todoResponseDtoList, page, size, returnToTalElements());
     }
 
     @Override
@@ -113,6 +124,11 @@ public class TodosRepositoryImpl implements TodosRepository {
     public void deleteTodoById(Long id, String password) {
         findTodoByIdAndAuthorize(id, password);
         jdbcTemplate.update("delete from todos where id = ?", id);
+    }
+
+    public int returnToTalElements() {
+        return Optional.ofNullable(jdbcTemplate.queryForObject("select count(*) from todos", Integer.class))
+                .orElse(0);
     }
 
     private void checkPassword(String storedPassword, String password) {

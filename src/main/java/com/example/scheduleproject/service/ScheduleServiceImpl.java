@@ -1,6 +1,8 @@
 package com.example.scheduleproject.service;
 
+import com.example.scheduleproject.dto.PageResponseDto;
 import com.example.scheduleproject.dto.TodoRequestDto;
+import com.example.scheduleproject.dto.TodoRequestGetDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
 import com.example.scheduleproject.entity.UsersEntity;
@@ -51,21 +53,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<TodoResponseDto> findTodoByNameOrUpdatedAt(String name, String updatedAtFrom, String updatedAtTo) {
+    public PageResponseDto<TodoResponseDto> findTodoByNameOrUpdatedAt(TodoRequestGetDto dto, int page, int size) {
         List<Long> userIdList = new ArrayList<>();
 
         // name을 받았다면 UsersRepository 사용하여 user name으로 user id값을 가져옴
-        if (name != null) {
-            userIdList = usersRepository.findUserIdByName(name);
+        if (dto.getName() != null) {
+            userIdList = usersRepository.findUserIdByName(dto.getName());
+            log.info("name = {}", userIdList.get(0));
         }
 
         // user id 값과 수정일을 사용해 조회
-        return scheduleRepository.findTodoByNameAndUpdatedAt(userIdList, updatedAtFrom, updatedAtTo);
+        return scheduleRepository.findTodoByNameAndUpdatedAt(userIdList, dto.getUpdatedAtFrom(), dto.getUpdatedAtTo(), page, size);
     }
 
     @Override
-    public List<TodoResponseDto> findTodoAll() {
-        return scheduleRepository.findTodoAll();
+    public PageResponseDto<TodoResponseDto> findTodoAll(int page, int size) {
+        return scheduleRepository.findTodoAll(page, size);
     }
 
     @Override
