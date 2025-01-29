@@ -1,5 +1,7 @@
 package com.example.scheduleproject.repository;
 
+import com.example.scheduleproject.entity.UsersEntity;
+import com.example.scheduleproject.mapper.ToRowMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,9 +15,11 @@ import java.util.*;
 public class UsersRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ToRowMapper toRowMapper;
 
-    public UsersRepository(JdbcTemplate jdbcTemplate) {
+    public UsersRepository(JdbcTemplate jdbcTemplate, ToRowMapper toRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.toRowMapper = toRowMapper;
     }
 
     public Optional<Long> findUserIdByEmail(String email) {
@@ -44,6 +48,11 @@ public class UsersRepository {
 
     public List<Long> findUserIdByName(String name) {
         return jdbcTemplate.queryForList("SELECT id FROM users WHERE name = ?", Long.class, name);
+    }
+
+    public UsersEntity findNameAndEmailByUserId(Long userId) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?",
+                toRowMapper.usersRowMapper(), userId).get(0);
     }
 
     private String getNowDatetime() {

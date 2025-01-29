@@ -11,4 +11,9 @@ public class UsersEntity {
     private String email;
     private String created_at;
     private String updated_at;
+
+    public UsersEntity(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }

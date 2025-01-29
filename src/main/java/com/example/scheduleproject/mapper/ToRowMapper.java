@@ -2,6 +2,7 @@ package com.example.scheduleproject.mapper;
 
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
+import com.example.scheduleproject.entity.UsersEntity;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,22 @@ import java.sql.SQLException;
 
 @Component
 public class ToRowMapper {
+
+    public RowMapper<TodoResponseDto> todoResponseDtoRowMapper() {
+        return new RowMapper<TodoResponseDto>() {
+            @Override
+            public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new TodoResponseDto(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("todo"),
+                        rs.getString("created_at"),
+                        rs.getString("updated_at")
+                );
+            }
+        };
+    }
 
     public RowMapper<TodosEntity> todosRowMapper() {
         return new RowMapper<TodosEntity>() {
@@ -27,17 +44,13 @@ public class ToRowMapper {
         };
     }
 
-    public RowMapper<TodoResponseDto> todoResponseDtoRowMapper() {
-        return new RowMapper<TodoResponseDto>() {
+    public RowMapper<UsersEntity> usersRowMapper() {
+        return new RowMapper<UsersEntity>() {
             @Override
-            public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new TodoResponseDto(
-                        rs.getLong("id"),
+            public UsersEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new UsersEntity(
                         rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("todo"),
-                        rs.getString("created_at"),
-                        rs.getString("updated_at")
+                        rs.getString("email")
                 );
             }
         };

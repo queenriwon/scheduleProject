@@ -45,12 +45,6 @@ public class TodosRepository implements ScheduleRepository {
         return jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", toRowMapper.todosRowMapper(), key).get(0);
     }
 
-    private String getNowDatetime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date now = new Date();
-        return sdf.format(now);
-    }
-
     @Override
     public List<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo) {
         StringBuilder sb = new StringBuilder(
@@ -94,12 +88,9 @@ public class TodosRepository implements ScheduleRepository {
     }
 
     @Override
-    public TodoResponseDto findTodoByIdElseThrow(Long id) {
-        List<TodoResponseDto> result = jdbcTemplate.query(
-                "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
-                        " from todos a join users b on a.user_id = b.id where a.id = ?", toRowMapper.todoResponseDtoRowMapper(), id);
-
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 id = " + id));
+    public Optional<TodosEntity> findTodoById(Long id) {
+        List<TodosEntity> todosEntityList = jdbcTemplate.query("select * from todos where a.id = ?", toRowMapper.todosRowMapper(), id);
+        return todosEntityList.stream().findAny();
     }
 
     @Override
@@ -125,5 +116,11 @@ public class TodosRepository implements ScheduleRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 id 값");
         }
         jdbcTemplate.update("delete from todos where id = ?", id);
+    }
+
+    private String getNowDatetime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        return sdf.format(now);
     }
 }

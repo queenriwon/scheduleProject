@@ -5,6 +5,7 @@ import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ScheduleRepository {
     TodosEntity createTodo(Long userId, TodoRequestDto dto);
@@ -13,7 +14,7 @@ public interface ScheduleRepository {
 
     List<TodoResponseDto> findTodoAll();
 
-    TodoResponseDto findTodoByIdElseThrow(Long id);
+    Optional<TodosEntity> findTodoById(Long id);
 
     int updateNameAndTodo(Long id, String name, String todo, String password);
 

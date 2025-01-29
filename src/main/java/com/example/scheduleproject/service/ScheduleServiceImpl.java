@@ -3,6 +3,7 @@ package com.example.scheduleproject.service;
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
+import com.example.scheduleproject.entity.UsersEntity;
 import com.example.scheduleproject.mapper.TodosToMapper;
 import com.example.scheduleproject.mapper.TodosToMapperImpl;
 import com.example.scheduleproject.repository.ScheduleRepository;
@@ -56,7 +57,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         // name을 받았다면 UsersRepository 사용하여 user name으로 user id값을 가져옴
         if (name != null) {
             userIdList = usersRepository.findUserIdByName(name);
-            log.info("userIdList = {}", userIdList.get(0));
         }
 
         // user id 값과 수정일을 사용해 조회
@@ -70,7 +70,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public TodoResponseDto findTodoById(Long id) {
-        return scheduleRepository.findTodoByIdElseThrow(id);
+
+        // TodosRepository 사용하여 id로 userId를 가져옴
+        TodosEntity todosEntity = scheduleRepository.findTodoById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found id"));
+
+        // UsersRepository 사용하여 userId로 name과 email을 가져옴
+        UsersEntity usersEntity = usersRepository.findNameAndEmailByUserId(todosEntity.getUser_id());
+
+        // DTO = todosEntity + usersEntity
+        return todosToMapper.toDTO(todosEntity, usersEntity.getName(), usersEntity.getEmail());
     }
 
     @Transactional
