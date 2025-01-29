@@ -6,16 +6,17 @@ import com.example.scheduleproject.dto.TodoRequestGetDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
 import com.example.scheduleproject.entity.UsersEntity;
+import com.example.scheduleproject.exception.IdNotFoundException;
+import com.example.scheduleproject.exception.InvalidRequestException;
+import com.example.scheduleproject.exception.NoMatchPasswordConfirmation;
 import com.example.scheduleproject.mapper.TodosToMapper;
 import com.example.scheduleproject.mapper.TodosToMapperImpl;
 import com.example.scheduleproject.repository.TodosRepository;
 import com.example.scheduleproject.repository.TodosRepositoryImpl;
 import com.example.scheduleproject.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public TodoResponseDto createTodo(TodoRequestDto dto) {
+        if (!dto.areAllNotNull())
+            throw new InvalidRequestException("필수 요청 값을 받지 못함");
         if (!(dto.getPassword().equals(dto.getPasswordCheck())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password != PasswordCheck");
+            throw new NoMatchPasswordConfirmation("비밀번호 확인 불일치");
 
         // userid를 불러옴 (UsersRepository 사용) (없을시 코드도 작성 + 유저 테이블에 데이터가 생성됨)
         Long userId = usersRepository.findUserIdByEmail(dto.getEmail())
@@ -75,7 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         // TodosRepository 사용하여 id로 userId를 가져옴
         TodosEntity todosEntity = scheduleRepository.findTodoById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found id"));
+                .orElseThrow(() -> new IdNotFoundException("존재하지 않는 id(" + id + ")"));
 
         // UsersRepository 사용하여 userId로 name과 email을 가져옴
         UsersEntity usersEntity = usersRepository.findNameAndEmailByUserId(todosEntity.getUser_id());
@@ -89,12 +92,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     public TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password) {
         // 둘다 입력되지 않았을시 예외던짐
         if (name == null && todo == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "항상 필수값임");
+            throw new InvalidRequestException("필수 요청 값을 받지 못함");
         }
 
         // 해당 id값 일정을 찾아옴(비밀번호 확인)
         TodosEntity todosEntity = todosRepository.findTodoByIdAndAuthorize(id, password)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Found id"));
+                .orElseThrow(() -> new IdNotFoundException("존재하지 않는 id(" + id + ")"));
 
         // name 입력시 UsersRepository에서 값 update(이름수정에대한 값 업데이트)
         if (name != null) {

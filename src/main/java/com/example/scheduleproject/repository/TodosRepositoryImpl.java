@@ -4,14 +4,14 @@ import com.example.scheduleproject.dto.PageResponseDto;
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
+import com.example.scheduleproject.exception.IdNotFoundException;
+import com.example.scheduleproject.exception.PasswordMismatchException;
 import com.example.scheduleproject.mapper.ToRowMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -106,7 +106,7 @@ public class TodosRepositoryImpl implements TodosRepository {
     public Optional<TodosEntity> findTodoByIdAndAuthorize(Long id, String password) {
         List<TodosEntity> todosEntityList = jdbcTemplate.query("select * from todos where id = ?", toRowMapper.todosRowMapper(), id);
         if (todosEntityList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+            throw new IdNotFoundException("존재하지 않는 id(" + id + ")");
         }
 
         TodosEntity todosEntity = todosEntityList.get(0);
@@ -132,7 +132,7 @@ public class TodosRepositoryImpl implements TodosRepository {
 
     private void checkPassword(String storedPassword, String password) {
         if (!storedPassword.equals(password))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 확인");
+            throw new PasswordMismatchException("비밀번호 불일치");
     }
 
     private String getNowDatetime() {

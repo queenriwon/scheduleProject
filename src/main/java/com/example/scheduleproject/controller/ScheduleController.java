@@ -1,7 +1,9 @@
 package com.example.scheduleproject.controller;
 
 import com.example.scheduleproject.dto.*;
+import com.example.scheduleproject.exception.MissingRequestParameterException;
 import com.example.scheduleproject.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ApiResponse<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto) {
+    public ApiResponse<TodoResponseDto> createTodo(@Valid @RequestBody TodoRequestDto dto) {
         TodoResponseDto responseDto = scheduleService.createTodo(dto);
         return ApiResponse.OK("일정 등록 완료", responseDto);
     }
@@ -62,5 +64,11 @@ public class ScheduleController {
             @RequestBody TodoRequestDto dto) {
         scheduleService.deleteTodoById(id, dto.getPassword());
         return ApiResponse.OK("아이디 " + id + "의 일정 삭제 완료");
+    }
+
+    @PatchMapping
+    @DeleteMapping
+    public ApiResponse<String> handleMissingId() {
+        throw new MissingRequestParameterException("id 파라미터 값 받지 못함");
     }
 }
