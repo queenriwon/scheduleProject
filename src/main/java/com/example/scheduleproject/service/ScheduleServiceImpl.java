@@ -6,8 +6,8 @@ import com.example.scheduleproject.entity.TodosEntity;
 import com.example.scheduleproject.entity.UsersEntity;
 import com.example.scheduleproject.mapper.TodosToMapper;
 import com.example.scheduleproject.mapper.TodosToMapperImpl;
-import com.example.scheduleproject.repository.ScheduleRepository;
 import com.example.scheduleproject.repository.TodosRepository;
+import com.example.scheduleproject.repository.TodosRepositoryImpl;
 import com.example.scheduleproject.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,12 +22,12 @@ import java.util.List;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-    private final ScheduleRepository scheduleRepository;
+    private final TodosRepository scheduleRepository;
     private final UsersRepository usersRepository;
     private final TodosToMapper todosToMapper = new TodosToMapperImpl();
-    private final TodosRepository todosRepository;
+    private final TodosRepositoryImpl todosRepository;
 
-    public ScheduleServiceImpl(ScheduleRepository scheduleRepository, UsersRepository usersRepository, TodosRepository todosRepository) {
+    public ScheduleServiceImpl(TodosRepository scheduleRepository, UsersRepository usersRepository, TodosRepositoryImpl todosRepository) {
         this.scheduleRepository = scheduleRepository;
         this.usersRepository = usersRepository;
         this.todosRepository = todosRepository;
@@ -91,7 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         // 해당 id값 일정을 찾아옴(비밀번호 확인)
-        TodosEntity todosEntity = todosRepository.findTodoById(id, password)
+        TodosEntity todosEntity = todosRepository.findTodoByIdAndAuthorize(id, password)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Found id"));
 
         // name 입력시 UsersRepository에서 값 update(이름수정에대한 값 업데이트)
