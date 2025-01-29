@@ -7,10 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UsersRepository {
@@ -43,6 +40,10 @@ public class UsersRepository {
         parametersUser.put("updated_at", getNowDatetime());
 
         return jdbcInsertUser.executeAndReturnKey(new MapSqlParameterSource(parametersUser)).longValue();
+    }
+
+    public List<Long> findUserIdByName(String name) {
+        return jdbcTemplate.queryForList("SELECT id FROM users WHERE name = ?", Long.class, name);
     }
 
     private String getNowDatetime() {

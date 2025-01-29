@@ -28,15 +28,15 @@ public class ScheduleController {
 
     @GetMapping
     public List<TodoResponseDto> findTodoByNameOrUpdatedAt(
-            @RequestParam String name,
-            @RequestParam String updatedAtFrom,
-            @RequestParam String updatedAtTo
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String updatedAtFrom,
+            @RequestParam(required = false) String updatedAtTo
     ) {
         return scheduleService.findTodoByNameOrUpdatedAt(name, updatedAtFrom, updatedAtTo);
     }
 
     @GetMapping("/read-all")
-    public List<TodoResponseDto> findTodoAll() {
+    public List<TodoResponseDto> findTodosAll() {
         return scheduleService.findTodoAll();
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 public interface ScheduleRepository {
     TodosEntity createTodo(Long userId, TodoRequestDto dto);
 
-    List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo);
+    List<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo);
 
     List<TodoResponseDto> findTodoAll();
 

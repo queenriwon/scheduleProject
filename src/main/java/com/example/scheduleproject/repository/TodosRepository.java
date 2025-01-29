@@ -3,18 +3,16 @@ package com.example.scheduleproject.repository;
 import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
+import com.example.scheduleproject.mapper.ToRowMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -23,9 +21,11 @@ import java.util.*;
 public class TodosRepository implements ScheduleRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ToRowMapper toRowMapper;
 
-    public TodosRepository(JdbcTemplate jdbcTemplate) {
+    public TodosRepository(JdbcTemplate jdbcTemplate, ToRowMapper toRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.toRowMapper = toRowMapper;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TodosRepository implements ScheduleRepository {
 
         Number key = jdbcInsertTodos.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), key).get(0);
+        return jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", toRowMapper.todosRowMapper(), key).get(0);
     }
 
     private String getNowDatetime() {
@@ -51,19 +51,21 @@ public class TodosRepository implements ScheduleRepository {
         return sdf.format(now);
     }
 
-
     @Override
-    public List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo) {
-
+    public List<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo) {
         StringBuilder sb = new StringBuilder(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
                         " from todos a join users b on a.user_id = b.id where 1=1");
         List<Object> list = new ArrayList<>();
 
-        if (name != null) {
-            Long userId = jdbcTemplate.queryForObject("select id from users where name = ?", Long.class, name);
-            sb.append(" and a.user_id = ?");
-            list.add(userId);
+        if (!userIdList.isEmpty()) {
+            sb.append(" and a.user_id IN (?");
+            list.add(userIdList.get(0));
+            for (int i = 1; i < userIdList.size(); i++) {
+                sb.append(", ?");
+                list.add(userIdList.get(i));
+            }
+            sb.append(")");
         }
 
         if (updatedAtFrom != null && updatedAtTo != null) {
@@ -80,10 +82,7 @@ public class TodosRepository implements ScheduleRepository {
 
         sb.append(" order by updated_at desc");
 
-        List<TodoResponseDto> result = jdbcTemplate.query(sb.toString(),
-                todoResponseDtoRowMapper(), list.toArray());
-
-        return result;
+        return jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray());
     }
 
     @Override
@@ -91,14 +90,14 @@ public class TodosRepository implements ScheduleRepository {
         return jdbcTemplate.query(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
                         " from todos a join users b on a.user_id = b.id" +
-                        " order by updated_at desc", todoResponseDtoRowMapper());
+                        " order by updated_at desc", toRowMapper.todoResponseDtoRowMapper());
     }
 
     @Override
     public TodoResponseDto findTodoByIdElseThrow(Long id) {
         List<TodoResponseDto> result = jdbcTemplate.query(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
-                        " from todos a join users b on a.user_id = b.id where a.id = ?", todoResponseDtoRowMapper(), id);
+                        " from todos a join users b on a.user_id = b.id where a.id = ?", toRowMapper.todoResponseDtoRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 id = " + id));
     }
@@ -126,38 +125,5 @@ public class TodosRepository implements ScheduleRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 id 값");
         }
         jdbcTemplate.update("delete from todos where id = ?", id);
-    }
-
-
-    private RowMapper<TodosEntity> todoRowMapper() {
-        return new RowMapper<TodosEntity>() {
-            @Override
-            public TodosEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new TodosEntity(
-                        rs.getLong("id"),
-                        rs.getLong("user_id"),
-                        rs.getString("todo"),
-                        rs.getString("password"),
-                        rs.getString("created_at"),
-                        rs.getString("updated_at")
-                );
-            }
-        };
-    }
-
-    private RowMapper<TodoResponseDto> todoResponseDtoRowMapper() {
-        return new RowMapper<TodoResponseDto>() {
-            @Override
-            public TodoResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new TodoResponseDto(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("todo"),
-                        rs.getString("created_at"),
-                        rs.getString("updated_at")
-                );
-            }
-        };
     }
 }

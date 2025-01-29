@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         // userid를 불러옴 (UsersRepository 사용) (없을시 코드도 작성 + 유저 테이블에 데이터가 생성됨)
         Long userId = usersRepository.findUserIdByEmail(dto.getEmail())
-                .orElseGet(() -> usersRepository.saveUser(dto.getName(), dto.getName()));
+                .orElseGet(() -> usersRepository.saveUser(dto.getName(), dto.getEmail()));
 
         // 가져온 userid를 이용해 저장 후 조회
         TodosEntity todosEntity = todosRepository.createTodo(userId, dto);
@@ -50,7 +51,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<TodoResponseDto> findTodoByNameOrUpdatedAt(String name, String updatedAtFrom, String updatedAtTo) {
-        return scheduleRepository.findTodoByNameAndUpdatedAt(name, updatedAtFrom, updatedAtTo);
+        List<Long> userIdList = new ArrayList<>();
+
+        // name을 받았다면 UsersRepository 사용하여 user name으로 user id값을 가져옴
+        if (name != null) {
+            userIdList = usersRepository.findUserIdByName(name);
+            log.info("userIdList = {}", userIdList.get(0));
+        }
+
+        // user id 값과 수정일을 사용해 조회
+        return scheduleRepository.findTodoByNameAndUpdatedAt(userIdList, updatedAtFrom, updatedAtTo);
     }
 
     @Override
