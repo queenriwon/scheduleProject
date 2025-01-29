@@ -6,6 +6,8 @@ import com.example.scheduleproject.entity.TodosEntity;
 import com.example.scheduleproject.mapper.TodosToMapper;
 import com.example.scheduleproject.mapper.TodosToMapperImpl;
 import com.example.scheduleproject.repository.ScheduleRepository;
+import com.example.scheduleproject.repository.TodosRepository;
+import com.example.scheduleproject.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,14 @@ import java.util.List;
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UsersRepository usersRepository;
     private final TodosToMapper todosToMapper = new TodosToMapperImpl();
+    private final TodosRepository todosRepository;
 
-    public ScheduleServiceImpl(ScheduleRepository scheduleRepository) {
+    public ScheduleServiceImpl(ScheduleRepository scheduleRepository, UsersRepository usersRepository, TodosRepository todosRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.usersRepository = usersRepository;
+        this.todosRepository = todosRepository;
     }
 
     @Transactional
@@ -30,8 +36,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     public TodoResponseDto createTodo(TodoRequestDto dto) {
         if (!(dto.getPassword().equals(dto.getPasswordCheck())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password != PasswordCheck");
-        TodosEntity todosEntity = scheduleRepository.createTodo(dto);
 
+        // userid를 불러옴 (UsersRepository 사용) (없을시 코드도 작성 + 유저 테이블에 데이터가 생성됨)
+        Long userId = usersRepository.findUserIdByEmail(dto.getEmail())
+                .orElseGet(() -> usersRepository.saveUser(dto.getName(), dto.getName()));
+
+        // 가져온 userid를 이용해 저장 후 조회
+        TodosEntity todosEntity = todosRepository.createTodo(userId, dto);
+
+        // TodoResponseDto 생성
         return todosToMapper.toDTO(todosEntity, dto.getName(), dto.getEmail());
     }
 

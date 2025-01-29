@@ -20,47 +20,16 @@ import java.util.*;
 
 @Slf4j
 @Repository
-public class ScheduleRepositoryImpl implements ScheduleRepository {
+public class TodosRepository implements ScheduleRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public ScheduleRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public TodosRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public TodosEntity createTodo(TodoRequestDto dto) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date now = new Date();
-        String nowTime = sdf.format(now);
-
-        int count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM users WHERE email = ?", Integer.class, dto.getEmail());
-
-        if (count > 0) {
-            String sql = "SELECT id FROM users WHERE email = ?";
-            Long userId = jdbcTemplate.queryForObject(sql, Long.class, dto.getEmail());
-
-            return saveTodosByUserId(userId, dto, nowTime);
-
-        }
-
-        SimpleJdbcInsert jdbcInsertUser = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsertUser.withTableName("users").usingGeneratedKeyColumns("id");
-
-        Map<String, Object> parametersUser = new HashMap<>();
-        parametersUser.put("name", dto.getName());
-        parametersUser.put("email", dto.getEmail());
-        parametersUser.put("created_at", nowTime);
-        parametersUser.put("updated_at", nowTime);
-
-        Number userId = jdbcInsertUser.executeAndReturnKey(new MapSqlParameterSource(parametersUser));
-
-        return saveTodosByUserId(userId.longValue(), dto, nowTime);
-    }
-
-    private TodosEntity saveTodosByUserId(Long userId, TodoRequestDto dto, String nowTime) {
-
+    public TodosEntity createTodo(Long userId, TodoRequestDto dto) {
         SimpleJdbcInsert jdbcInsertTodos = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsertTodos.withTableName("todos").usingGeneratedKeyColumns("id");
 
@@ -68,12 +37,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         parameters.put("user_id", userId);
         parameters.put("todo", dto.getTodo());
         parameters.put("password", dto.getPassword());
-        parameters.put("created_at", nowTime);
-        parameters.put("updated_at", nowTime);
+        parameters.put("created_at", getNowDatetime());
+        parameters.put("updated_at", getNowDatetime());
 
         Number key = jdbcInsertTodos.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
         return jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), key).get(0);
+    }
+
+    private String getNowDatetime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        return sdf.format(now);
     }
 
 

@@ -7,7 +7,7 @@ import com.example.scheduleproject.entity.TodosEntity;
 import java.util.List;
 
 public interface ScheduleRepository {
-    TodosEntity createTodo(TodoRequestDto dto);
+    TodosEntity createTodo(Long userId, TodoRequestDto dto);
 
     List<TodoResponseDto> findTodoByNameAndUpdatedAt(String name, String updatedAtFrom, String updatedAtTo);
 
