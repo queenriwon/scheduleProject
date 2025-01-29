@@ -16,7 +16,9 @@ public interface ScheduleRepository {
 
     Optional<TodosEntity> findTodoById(Long id);
 
-    int updateNameAndTodo(Long id, String name, String todo, String password);
+    Optional<TodosEntity> findTodoById(Long id, String password);
+
+    void updateTodo(Long id, String todo);
 
     void deleteTodoById(Long id, String password);
 

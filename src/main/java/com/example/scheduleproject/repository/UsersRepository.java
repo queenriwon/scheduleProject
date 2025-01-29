@@ -55,6 +55,10 @@ public class UsersRepository {
                 toRowMapper.usersRowMapper(), userId).get(0);
     }
 
+    public void updateUserName(Long userId, String name) {
+        jdbcTemplate.update("update users set name = ? where id = ?", name, userId);
+    }
+
     private String getNowDatetime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();

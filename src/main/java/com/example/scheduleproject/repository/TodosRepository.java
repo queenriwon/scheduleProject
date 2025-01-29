@@ -89,21 +89,25 @@ public class TodosRepository implements ScheduleRepository {
 
     @Override
     public Optional<TodosEntity> findTodoById(Long id) {
-        List<TodosEntity> todosEntityList = jdbcTemplate.query("select * from todos where a.id = ?", toRowMapper.todosRowMapper(), id);
+        List<TodosEntity> todosEntityList = jdbcTemplate.query("select * from todos where id = ?", toRowMapper.todosRowMapper(), id);
         return todosEntityList.stream().findAny();
     }
 
     @Override
-    public int updateNameAndTodo(Long id, String name, String todo, String password) {
-        String storedPassword = jdbcTemplate.queryForObject("select password from todos where id = ?", String.class, id);
+    public Optional<TodosEntity> findTodoById(Long id, String password) {
+        List<TodosEntity> todosEntityList = jdbcTemplate.query("select * from todos where id = ?", toRowMapper.todosRowMapper(), id);
+        if (todosEntityList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+        }
 
-        if (!storedPassword.equals(password))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 확인");
+        TodosEntity todosEntity = todosEntityList.get(0);
+        checkPassword(todosEntity.getPassword(), password);
+        return Optional.of(todosEntity);
+    }
 
-        Long userId = jdbcTemplate.queryForObject("select user_id from todos where id = ?", Long.class, id);
-        jdbcTemplate.update("update users set name = ? where id = ?", name, userId);
-
-        return jdbcTemplate.update("update todos set todo = ? where user_id = ?", todo, userId);
+    @Override
+    public void updateTodo(Long id, String todo) {
+        jdbcTemplate.update("update todos set todo = ? where id = ?", todo, id);
     }
 
     @Override
@@ -116,6 +120,11 @@ public class TodosRepository implements ScheduleRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 id 값");
         }
         jdbcTemplate.update("delete from todos where id = ?", id);
+    }
+
+    private void checkPassword(String storedPassword, String password) {
+        if (!storedPassword.equals(password))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호 확인");
     }
 
     private String getNowDatetime() {

@@ -85,14 +85,27 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public TodoResponseDto updateNameAndTodo(Long id, String name, String todo, String password) {
-        if (name == null || todo == null) {
+        // 둘다 입력되지 않았을시 예외던짐
+        if (name == null && todo == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "항상 필수값임");
         }
 
-        int updatedRows = scheduleRepository.updateNameAndTodo(id, name, todo, password);
-        if (updatedRows == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을수 없는 id" + id);
+        // 해당 id값 일정을 찾아옴(비밀번호 확인)
+        TodosEntity todosEntity = todosRepository.findTodoById(id, password)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not Found id"));
 
-        return scheduleRepository.findTodoByIdElseThrow(id);
+        // name 입력시 UsersRepository에서 값 update(이름수정에대한 값 업데이트)
+        if (name != null) {
+            usersRepository.updateUserName(todosEntity.getUser_id(), name);
+        }
+
+        // todos 입력시 TodosRepository에서 값 update(일정수정에 대한 값 업데이트)
+        if (todo != null) {
+            todosRepository.updateTodo(id, todo);
+        }
+
+        // 업데이트한 값을 조회해서 출력
+        return findTodoById(id);
     }
 
     @Transactional
