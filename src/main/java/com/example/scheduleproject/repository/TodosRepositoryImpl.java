@@ -85,7 +85,6 @@ public class TodosRepositoryImpl implements TodosRepository {
         List<TodoResponseDto> todoResponseDtoList = jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray());
 
         return new PageResponseDto<>(todoResponseDtoList, page, size, totalElements);
-
     }
 
     @Override

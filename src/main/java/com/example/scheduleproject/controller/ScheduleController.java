@@ -1,13 +1,8 @@
 package com.example.scheduleproject.controller;
 
-import com.example.scheduleproject.dto.PageResponseDto;
-import com.example.scheduleproject.dto.TodoRequestDto;
-import com.example.scheduleproject.dto.TodoRequestGetDto;
-import com.example.scheduleproject.dto.TodoResponseDto;
+import com.example.scheduleproject.dto.*;
 import com.example.scheduleproject.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -22,45 +17,50 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto) {
-        return new ResponseEntity<>(scheduleService.createTodo(dto), HttpStatus.CREATED);
+    public ApiResponse<TodoResponseDto> createTodo(@RequestBody TodoRequestDto dto) {
+        TodoResponseDto responseDto = scheduleService.createTodo(dto);
+        return ApiResponse.OK("일정 등록 완료", responseDto);
     }
 
     @GetMapping
-    public PageResponseDto<TodoResponseDto> findTodoByNameOrUpdatedAt(
+    public ApiResponse<PageResponseDto<TodoResponseDto>> findTodoByNameOrUpdatedAt(
             @ModelAttribute TodoRequestGetDto dto,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-            ) {
-        return scheduleService.findTodoByNameOrUpdatedAt(dto, page, size);
+    ) {
+        PageResponseDto<TodoResponseDto> pageResponseDto = scheduleService.findTodoByNameOrUpdatedAt(dto, page, size);
+        return ApiResponse.OK("특정 조건의 일정 조회 완료", pageResponseDto);
     }
 
     @GetMapping("/read-all")
-    public PageResponseDto<TodoResponseDto> findTodosAll(
+    public ApiResponse<PageResponseDto<TodoResponseDto>> findTodosAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return scheduleService.findTodoAll(page, size);
+        PageResponseDto<TodoResponseDto> pageResponseDto = scheduleService.findTodoAll(page, size);
+        return ApiResponse.OK("모든 일정 조회 완료", pageResponseDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TodoResponseDto> findTodoById(@PathVariable Long id) {
-        return new ResponseEntity<>(scheduleService.findTodoById(id), HttpStatus.OK);
+    public ApiResponse<TodoResponseDto> findTodoById(@PathVariable Long id) {
+        TodoResponseDto responseDto = scheduleService.findTodoById(id);
+        return ApiResponse.OK("아이디 " + id + "의 일정 조회 완료", responseDto);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TodoResponseDto> updateNameAndTodo(
+    public ApiResponse<TodoResponseDto> updateNameAndTodo(
             @PathVariable Long id,
             @RequestBody TodoRequestDto dto
     ) {
-        return new ResponseEntity<>(scheduleService.updateNameAndTodo(id, dto.getName(), dto.getTodo(), dto.getPassword()), HttpStatus.OK);
+        TodoResponseDto responseDto = scheduleService.updateNameAndTodo(id, dto.getName(), dto.getTodo(), dto.getPassword());
+        return ApiResponse.OK("아이디 " + id + "의 일정 수정 완료", responseDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodoById(
+    public ApiResponse<Void> deleteTodoById(
             @PathVariable Long id,
             @RequestBody TodoRequestDto dto) {
         scheduleService.deleteTodoById(id, dto.getPassword());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ApiResponse.OK("아이디 " + id + "의 일정 삭제 완료");
     }
 }

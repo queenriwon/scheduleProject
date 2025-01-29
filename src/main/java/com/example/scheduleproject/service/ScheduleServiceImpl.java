@@ -59,7 +59,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         // name을 받았다면 UsersRepository 사용하여 user name으로 user id값을 가져옴
         if (dto.getName() != null) {
             userIdList = usersRepository.findUserIdByName(dto.getName());
-            log.info("name = {}", userIdList.get(0));
         }
 
         // user id 값과 수정일을 사용해 조회
