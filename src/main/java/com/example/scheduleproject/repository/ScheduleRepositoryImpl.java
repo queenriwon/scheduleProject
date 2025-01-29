@@ -119,7 +119,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     public TodoResponseDto findTodoByIdElseThrow(Long id) {
         List<TodoResponseDto> result = jdbcTemplate.query(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
-                " from todos a join users b on a.user_id = b.id where a.id = ?", todoResponseDtoRowMapper(), id);
+                        " from todos a join users b on a.user_id = b.id where a.id = ?", todoResponseDtoRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 id = " + id));
     }
