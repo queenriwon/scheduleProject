@@ -29,37 +29,43 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public TodoResponseDto createTodo(TodoRequestDto dto) {
+    public TodosEntity createTodo(TodoRequestDto dto) {
 
-        int count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM users WHERE email = ?", Integer.class, dto.getEmail());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
         String nowTime = sdf.format(now);
 
-        Number userId;
+        int count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM users WHERE email = ?", Integer.class, dto.getEmail());
 
         if (count > 0) {
             String sql = "SELECT id FROM users WHERE email = ?";
-            userId = jdbcTemplate.queryForObject(sql, Long.class, dto.getEmail());
+            Long userId = jdbcTemplate.queryForObject(sql, Long.class, dto.getEmail());
 
-        } else {
-            SimpleJdbcInsert jdbcInsertUser = new SimpleJdbcInsert(jdbcTemplate);
-            jdbcInsertUser.withTableName("users").usingGeneratedKeyColumns("id");
+            return saveTodosByUserId(userId, dto, nowTime);
 
-            Map<String, Object> parametersUser = new HashMap<>();
-            parametersUser.put("name", dto.getName());
-            parametersUser.put("email", dto.getEmail());
-            parametersUser.put("created_at", nowTime);
-            parametersUser.put("updated_at", nowTime);
-
-            userId = jdbcInsertUser.executeAndReturnKey(new MapSqlParameterSource(parametersUser));
         }
+
+        SimpleJdbcInsert jdbcInsertUser = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsertUser.withTableName("users").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parametersUser = new HashMap<>();
+        parametersUser.put("name", dto.getName());
+        parametersUser.put("email", dto.getEmail());
+        parametersUser.put("created_at", nowTime);
+        parametersUser.put("updated_at", nowTime);
+
+        Number userId = jdbcInsertUser.executeAndReturnKey(new MapSqlParameterSource(parametersUser));
+
+        return saveTodosByUserId(userId.longValue(), dto, nowTime);
+    }
+
+    private TodosEntity saveTodosByUserId(Long userId, TodoRequestDto dto, String nowTime) {
 
         SimpleJdbcInsert jdbcInsertTodos = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsertTodos.withTableName("todos").usingGeneratedKeyColumns("id");
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("user_id", userId.longValue());
+        parameters.put("user_id", userId);
         parameters.put("todo", dto.getTodo());
         parameters.put("password", dto.getPassword());
         parameters.put("created_at", nowTime);
@@ -67,9 +73,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
         Number key = jdbcInsertTodos.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        TodosEntity result = jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), key).get(0);
-
-        return new TodoResponseDto(key.longValue(), dto.getName(), dto.getEmail(), result.getTodo(), result.getCreatedAt(), result.getUpdatedAt());
+        return jdbcTemplate.query("SELECT * FROM todos WHERE id = ?", todoRowMapper(), key).get(0);
     }
 
 
