@@ -34,7 +34,7 @@ public class ScheduleControllerImpl{
         return ApiResponseDto.OK("특정 조건의 일정 조회 완료", pageResponseDto);
     }
 
-    @GetMapping("/read-all")
+    @GetMapping("/all")
     public ApiResponseDto<PageResponseDto<TodoResponseDto>> findTodosAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -55,7 +55,7 @@ public class ScheduleControllerImpl{
             @RequestBody TodoRequestDto dto
     ) {
         TodoResponseDto responseDto = scheduleService.updateNameAndTodo(id, dto.getName(), dto.getTodo(), dto.getPassword());
-        return ApiResponseDto.OK("아이디 " + id + "의 일정 수정 완료", responseDto);
+        return ApiResponseDto.OK("아이디 " + id + "의 이름 및 일정 수정 완료", responseDto);
     }
 
     @DeleteMapping("/{id}")

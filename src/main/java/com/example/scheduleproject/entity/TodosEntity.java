@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class TodosEntity {
 
     private Long id;
-    private Long user_id;
+    private Long userId;
     private String todo;
     private String password;
     private String createdAt;

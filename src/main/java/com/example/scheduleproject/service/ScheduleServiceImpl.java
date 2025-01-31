@@ -78,7 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .orElseThrow(() -> new IdNotFoundException("존재하지 않는 id(" + id + ")"));
 
         // UsersRepository 사용하여 userId로 name과 email을 가져옴
-        UsersEntity usersEntity = usersRepository.findNameAndEmailByUserId(todosEntity.getUser_id());
+        UsersEntity usersEntity = usersRepository.findNameAndEmailByUserId(todosEntity.getUserId());
 
         // DTO = todosEntity + usersEntity
         return todosToMapper.toDTO(todosEntity, usersEntity.getName(), usersEntity.getEmail());
@@ -98,7 +98,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         // name 입력시 UsersRepository에서 값 update(이름수정에대한 값 업데이트)
         if (name != null) {
-            usersRepository.updateUserName(todosEntity.getUser_id(), name);
+            usersRepository.updateUserName(todosEntity.getUserId(), name);
         }
 
         // todos 입력시 TodosRepository에서 값 update(일정수정에 대한 값 업데이트)
