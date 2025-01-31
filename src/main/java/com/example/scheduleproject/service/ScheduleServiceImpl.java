@@ -12,7 +12,6 @@ import com.example.scheduleproject.exception.NoMatchPasswordConfirmation;
 import com.example.scheduleproject.mapper.TodosToMapper;
 import com.example.scheduleproject.mapper.TodosToMapperImpl;
 import com.example.scheduleproject.repository.TodosRepository;
-import com.example.scheduleproject.repository.TodosRepositoryImpl;
 import com.example.scheduleproject.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,13 +24,11 @@ import java.util.List;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-    private final TodosRepository scheduleRepository;
     private final UsersRepository usersRepository;
+    private final TodosRepository todosRepository;
     private final TodosToMapper todosToMapper = new TodosToMapperImpl();
-    private final TodosRepositoryImpl todosRepository;
 
-    public ScheduleServiceImpl(TodosRepository scheduleRepository, UsersRepository usersRepository, TodosRepositoryImpl todosRepository) {
-        this.scheduleRepository = scheduleRepository;
+    public ScheduleServiceImpl(UsersRepository usersRepository, TodosRepository todosRepository) {
         this.usersRepository = usersRepository;
         this.todosRepository = todosRepository;
     }
@@ -65,19 +62,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         // user id 값과 수정일을 사용해 조회
-        return scheduleRepository.findTodoByNameAndUpdatedAt(userIdList, dto.getUpdatedAtFrom(), dto.getUpdatedAtTo(), page, size);
+        return todosRepository.findTodoByNameAndUpdatedAt(userIdList, dto.getUpdatedAtFrom(), dto.getUpdatedAtTo(), page, size);
     }
 
     @Override
     public PageResponseDto<TodoResponseDto> findTodoAll(int page, int size) {
-        return scheduleRepository.findTodoAll(page, size);
+        return todosRepository.findTodoAll(page, size);
     }
 
     @Override
     public TodoResponseDto findTodoById(Long id) {
 
         // TodosRepository 사용하여 id로 userId를 가져옴
-        TodosEntity todosEntity = scheduleRepository.findTodoById(id)
+        TodosEntity todosEntity = todosRepository.findTodoById(id)
                 .orElseThrow(() -> new IdNotFoundException("존재하지 않는 id(" + id + ")"));
 
         // UsersRepository 사용하여 userId로 name과 email을 가져옴
@@ -116,6 +113,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public void deleteTodoById(Long id, String password) {
-        scheduleRepository.deleteTodoById(id, password);
+        todosRepository.deleteTodoById(id, password);
     }
 }

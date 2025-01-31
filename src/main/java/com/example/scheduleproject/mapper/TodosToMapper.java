@@ -9,6 +9,8 @@ import org.mapstruct.Mapper;
 public interface TodosToMapper {
 
     TodoResponseDto toDTO(TodosEntity e);
+
     TodoResponseDto toDTO(TodosEntity e, String name, String email);
+
     TodosEntity toEntity(TodoRequestDto dto);
 }
