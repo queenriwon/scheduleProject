@@ -1,47 +1,49 @@
 package com.example.scheduleproject.exception;
 
-import com.example.scheduleproject.dto.ApiResponse;
+import com.example.scheduleproject.dto.ApiResponseDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Hidden
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoMatchPasswordConfirmation.class)
-    protected ApiResponse<String> noMatchPasswordConfirmationHandler(NoMatchPasswordConfirmation ex) {
+    protected ApiResponseDto<String> noMatchPasswordConfirmationHandler(NoMatchPasswordConfirmation ex) {
         log.error("예외 발생 = {}", ex.getMessage());
-        return ApiResponse.fail(ErrorCode.NO_MATCH_PASSWORD_CONFIRMATION);
+        return ApiResponseDto.fail(ErrorCode.NO_MATCH_PASSWORD_CONFIRMATION);
     }
 
     @ExceptionHandler(InvalidRequestException.class)
-    protected ApiResponse<String> invalidRequestExceptionHandler(InvalidRequestException ex) {
+    protected ApiResponseDto<String> invalidRequestExceptionHandler(InvalidRequestException ex) {
         log.error("예외 발생 = {}", ex.getMessage());
-        return ApiResponse.fail(ErrorCode.MISSING_REQUIRED_FIELD);
+        return ApiResponseDto.fail(ErrorCode.MISSING_REQUIRED_FIELD);
     }
 
     @ExceptionHandler(IdNotFoundException.class)
-    protected ApiResponse<String> idNotFoundExceptionHandler(IdNotFoundException ex) {
+    protected ApiResponseDto<String> idNotFoundExceptionHandler(IdNotFoundException ex) {
         log.error("예외 발생 = {}", ex.getMessage());
-        return ApiResponse.fail(ErrorCode.NOT_FOUND);
+        return ApiResponseDto.fail(ErrorCode.NOT_FOUND);
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
-    protected ApiResponse<String> passwordMismatchExceptionHandler(PasswordMismatchException ex) {
+    protected ApiResponseDto<String> passwordMismatchExceptionHandler(PasswordMismatchException ex) {
         log.error("예외 발생 = {}", ex.getMessage());
-        return ApiResponse.fail(ErrorCode.UNAUTHORIZED);
+        return ApiResponseDto.fail(ErrorCode.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MissingRequestParameterException.class)
-    protected ApiResponse<String> missingRequestParameterExceptionHandler(MissingRequestParameterException ex) {
+    protected ApiResponseDto<String> missingRequestParameterExceptionHandler(MissingRequestParameterException ex) {
         log.error("예외 발생 = {}", ex.getMessage());
-        return ApiResponse.fail(ErrorCode.MISSING_PARAMETER_ID);
+        return ApiResponseDto.fail(ErrorCode.MISSING_PARAMETER_ID);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ApiResponse<String> handleValidationExceptionHandler(MethodArgumentNotValidException ex) {
+    public ApiResponseDto<String> handleValidationExceptionHandler(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -49,12 +51,12 @@ public class GlobalExceptionHandler {
                 .findFirst()
                 .orElse("입력값이 올바르지 않습니다.");
 
-        return new ApiResponse<>(400, "BAD_REQUEST", errorMessage);
+        return new ApiResponseDto<>(400, "BAD_REQUEST", null, errorMessage);
     }
 
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<String> handleGeneralException(Exception ex) {
+    protected ApiResponseDto<String> handleGeneralException(Exception ex) {
         log.error("예외 발생 = {}", ex.getMessage());
-        return ApiResponse.fail(ErrorCode.FAIL);
+        return ApiResponseDto.fail(ErrorCode.FAIL);
     }
 }
