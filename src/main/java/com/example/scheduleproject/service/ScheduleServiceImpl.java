@@ -51,7 +51,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         TodosEntity todosEntity = todosRepository.createTodo(userId, dto);
 
         // 3. TodoResponseDto 매핑
-        return todosToMapper.toDTO(todosEntity, dto.getName(), dto.getEmail());
+        return todosToMapper.toDto(todosEntity, dto.getName(), dto.getEmail());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         UsersEntity usersEntity = usersRepository.findNameAndEmailByUserId(todosEntity.getUserId());
 
         // 3. ResponseDTO = todosEntity + usersEntity
-        return todosToMapper.toDTO(todosEntity, usersEntity.getName(), usersEntity.getEmail());
+        return todosToMapper.toDto(todosEntity, usersEntity.getName(), usersEntity.getEmail());
     }
 
     @Transactional

@@ -8,9 +8,9 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface TodosToMapper {
 
-    TodoResponseDto toDTO(TodosEntity e);
+    TodoResponseDto toDto(TodosEntity e);
 
-    TodoResponseDto toDTO(TodosEntity e, String name, String email);
+    TodoResponseDto toDto(TodosEntity e, String name, String email);
 
     TodosEntity toEntity(TodoRequestDto dto);
 }
