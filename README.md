@@ -13,7 +13,7 @@
 	* environment : IntelliJ IDEA, git, github
 	* development : JAVA JDK 17, Spring Boot 3.4.2, JDBC, MySQL, swagger 2.3.0
 
-
+<br><br>
 
 
 # 👉 Lv.0 - API 명세서, ERD 다이어그램
@@ -21,11 +21,12 @@
 
 <details>
   <summary>상세 API 명세서</summary>
+	
 * 상세 API 명세서(설계단계)
   https://flaxen-swan-41e.notion.site/Lv-0-186b649ebbbd80f2a570ccd9ef43adb1
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbXXRcj%2FbtsL5lqBqrN%2FDxKeXAU7zx1nhLKZDJuDeK%2Fimg.png">
 
-* 구현 후 API 명세서('''http://localhost:8080/swagger-ui/index.html''')
+* 구현 후 API 명세서(`http://localhost:8080/swagger-ui/index.html`)
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FGSY81%2FbtsL4zXsuOp%2FnRWNJeYIFP0eHfaLtLhLCK%2Fimg.png">
 </details>
 
@@ -36,7 +37,7 @@
 </details>
 
 
-
+<br><br>
 
 
 
@@ -52,7 +53,7 @@
 
 
 
-
+<br><br>
 
 
 # 👉 구현 내용
@@ -76,7 +77,8 @@
 
 <details>
 	<summary>선택 구현사항</summary>
- *  Lv.3 (구현)
+
+*  Lv.3 (구현)
   * 작성자에 대해 고유 식별자를 부여하여 동명이인을 구분
   * 작성자는 이름, 이메일, 등록일, 수정일 정보를 가지고 있음
   * 작성자 테이블을 생성하고 일정 테이블에 FK를 생성해 연관관계를 설정
@@ -91,15 +93,11 @@
   * 할일 200자 이내, 필수값 처리
   * 비밀번호는 필수값 처리
   * 이메일 형식이 유효한지 확인
-	
+ 
 </details>
 
 
-
-
-
-
-
+<br><br>
 
 
 
@@ -112,7 +110,7 @@
 * 인덱스를 입력 받는 만큼 메서드마다 인덱스를 반환하거나 ArrayList.get(인덱스)를 이용
 
 
-
+<br><br>
 
 # 👉 부족하거나 아쉬운 점, 공부하고 싶은 내용
 * 제네릭을 사용할 때 타입변수를 효과적으로 다뤄보기
@@ -123,7 +121,7 @@
 
 
 
-
+<br><br>
 
 
 
@@ -133,7 +131,7 @@
 
 
 
-
+<br><br>
 
 
 
@@ -141,6 +139,7 @@
 # 👉구현결과
 
 <details>
+<summary>구현결과</summary>
 
 	<details>
 		<summary>일정 작성(POST)</summary>
