@@ -16,11 +16,4 @@ public class TodoResponseDto {
     private String todo;
     private String createdAt;
     private String updatedAt;
-
-    public TodoResponseDto(Long id, String todo, String createdAt, String updatedAt) {
-        this.id = id;
-        this.todo = todo;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 }

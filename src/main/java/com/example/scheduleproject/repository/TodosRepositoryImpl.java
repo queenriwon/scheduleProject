@@ -47,6 +47,7 @@ public class TodosRepositoryImpl implements TodosRepository {
 
     @Override
     public PageResponseDto<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo, int page, int size) {
+        // 동적쿼리문 생성
         StringBuilder sb = new StringBuilder(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
                         " from todos a join users b on a.user_id = b.id where 1=1");
@@ -76,7 +77,8 @@ public class TodosRepositoryImpl implements TodosRepository {
             list.add(updatedAtTo);
         }
 
-        int totalElements = jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray()).size();
+        int totalElements = Optional.of(jdbcTemplate.query(sb.toString(), toRowMapper.todoResponseDtoRowMapper(), list.toArray()).size())
+                .orElse(0);
 
         sb.append(" order by updated_at desc limit ? offset ?");
         list.add(size);
