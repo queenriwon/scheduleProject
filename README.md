@@ -13,16 +13,16 @@
 	* environment : IntelliJ IDEA, git, github
 	* development : JAVA JDK 17, Spring Boot 3.4.2, JDBC, MySQL, swagger 2.3.0
 
+
+# 👉 Lv.0 - API 명세서, ERD 다이어그램
 <detail>
-  <summary># 👉 Lv.0 - API 명세서, ERD 다이어그램</summary>
-  상세 API 명세서, swagger사용
+  <summary>상세 API 명세서</summary>
   https://flaxen-swan-41e.notion.site/Lv-0-186b649ebbbd80f2a570ccd9ef43adb1
 
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbXXRcj%2FbtsL5lqBqrN%2FDxKeXAU7zx1nhLKZDJuDeK%2Fimg.png">
+  <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FGSY81%2FbtsL4zXsuOp%2FnRWNJeYIFP0eHfaLtLhLCK%2Fimg.png">
 
-  
 
-  
 </detail>
 
 
