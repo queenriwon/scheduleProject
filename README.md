@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/268fea60-f1d5-4abe-b5b0-7395b1a7aebc)![image](https://github.com/user-attachments/assets/bce81692-50d9-4290-8b3e-a138c79d2422)![image](https://github.com/user-attachments/assets/61f383ee-1ad4-4ec8-bcc5-200541296d6f)# 👉 일정관리 앱 과제 소개
+# 👉 일정관리 앱 과제 소개
 
 * 프로젝트 명 : Java Spring Boot로 일정관리 앱을 구현해보자
     * 배운 내용을 바탕으로 일정 관리 앱를 구현하는 과제입니다.
@@ -18,18 +18,26 @@
 
 # 👉 Lv.0 - API 명세서, ERD 다이어그램
 
+
 <details>
   <summary>상세 API 명세서</summary>
+* 상세 API 명세서(설계단계)
   https://flaxen-swan-41e.notion.site/Lv-0-186b649ebbbd80f2a570ccd9ef43adb1
-
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbXXRcj%2FbtsL5lqBqrN%2FDxKeXAU7zx1nhLKZDJuDeK%2Fimg.png">
+
+* 구현 후 API 명세서('''http://localhost:8080/swagger-ui/index.html''')
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FGSY81%2FbtsL4zXsuOp%2FnRWNJeYIFP0eHfaLtLhLCK%2Fimg.png">
 </details>
+
 <details>
   <summary>ERD 다이어그램</summary>
 
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FxYBKG%2FbtsL4HVfPsc%2FAAcCXU1yuVXs9mTbNqSkT0%2Fimg.png">
 </details>
+
+
+
+
 
 
 # 👉 트러블슈팅
@@ -41,6 +49,10 @@
 250203 - Java Spring 일정관리 앱 구현과 트러블슈팅: API 명세서, 멀티table과 Repository, Paging, @ExceptionHandler, 공통응답, 유효성 검사, Swagger
 
 <https://queenriwon3.tistory.com/102>
+
+
+
+
 
 
 # 👉 구현 내용
@@ -129,31 +141,43 @@
 # 👉구현결과
 
 <details>
-<summary>구현 결과</summary>
+
+	<details>
+		<summary>일정 작성(POST)</summary>
+		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fr4RQc%2FbtsL4AhIv9q%2FMtHRnM4G1u24Phe57CV9H0%2Fimg.png">
+		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsnbFp%2FbtsL52YmTr4%2FWEMhs9MKUl5Jl7mkJLYdHk%2Fimg.png">
+	</details>
 	
-* 일정 작성(POST)
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fr4RQc%2FbtsL4AhIv9q%2FMtHRnM4G1u24Phe57CV9H0%2Fimg.png">
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsnbFp%2FbtsL52YmTr4%2FWEMhs9MKUl5Jl7mkJLYdHk%2Fimg.png">
+	<details>
+		<summary>조건 일정 조회(GET)</summary>
+		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVoIvO%2FbtsL6X9ECea%2FtMrT4DPLt5KBQ1UTEsqiF0%2Fimg.png">	
+	</details>
+	
+	<details>
+		<summary>전체 일정 조회(GET)</summary>
+		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F4Hiz2%2FbtsL6LhjKu6%2Fe3UdnA3zkXXqWJzEjWjkH0%2Fimg.png">
+		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdZn1zm%2FbtsL6Ln4et0%2FOtdZRf9CkjrTzYzVkn5x71%2Fimg.png">	
+	</details>
+	
+	<details>
+		<summary>단일 일정 조회(GET)</summary>
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcJMQci%2FbtsL6qdrZ9s%2F5joydw2vVqenKyaPhwqny1%2Fimg.png">
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FFbr04%2FbtsL6t2gzrg%2FIEU5JqthxDGMkFXdfuOlPk%2Fimg.png">
+	</details>
+	
+	
+	<details>
+		<summary>일정 수정(PATCH)</summary>
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FICHlf%2FbtsL50Giikf%2FAC8y6EVGMP2TQq1ROSyoPK%2Fimg.png">
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FoWFSK%2FbtsL5A16GUC%2FrpWCSBjpVlCxShcqvlQQwK%2Fimg.png">
+	</details>
+	
+	<details>
+		<summary>일정 삭제(DELETE)</summary>
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcnyaJz%2FbtsL52qzqgt%2FtgV2pLwb0akA2vMK0yoBNk%2Fimg.png">
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb8fo5w%2FbtsL6b8FaEb%2FF51pjDe6hk7D53FdJGAkWK%2Fimg.png">
+		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUEeZH%2FbtsL6bnlvx1%2FzEkUUrbvOx0NMQSoa65lH1%2Fimg.png">	
+	</details>
 
-* 조건 일정 조회(GET)
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVoIvO%2FbtsL6X9ECea%2FtMrT4DPLt5KBQ1UTEsqiF0%2Fimg.png">
-
-* 전체 일정 조회(GET)
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F4Hiz2%2FbtsL6LhjKu6%2Fe3UdnA3zkXXqWJzEjWjkH0%2Fimg.png">
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdZn1zm%2FbtsL6Ln4et0%2FOtdZRf9CkjrTzYzVkn5x71%2Fimg.png">
-
-* 단일 일정 조회(GET)
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcJMQci%2FbtsL6qdrZ9s%2F5joydw2vVqenKyaPhwqny1%2Fimg.png">
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FFbr04%2FbtsL6t2gzrg%2FIEU5JqthxDGMkFXdfuOlPk%2Fimg.png">
-
-* 일정 수정(PATCH)
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FICHlf%2FbtsL50Giikf%2FAC8y6EVGMP2TQq1ROSyoPK%2Fimg.png">
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FoWFSK%2FbtsL5A16GUC%2FrpWCSBjpVlCxShcqvlQQwK%2Fimg.png">
-
-* 일정 삭제(DELETE)
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcnyaJz%2FbtsL52qzqgt%2FtgV2pLwb0akA2vMK0yoBNk%2Fimg.png">
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb8fo5w%2FbtsL6b8FaEb%2FF51pjDe6hk7D53FdJGAkWK%2Fimg.png">
-<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUEeZH%2FbtsL6bnlvx1%2FzEkUUrbvOx0NMQSoa65lH1%2Fimg.png">
- 
 </details>
 
