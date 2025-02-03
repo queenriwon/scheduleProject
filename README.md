@@ -78,10 +78,11 @@
 <details>
 	<summary>선택 구현사항</summary>
 
-*  Lv.3 (구현)
+* Lv.3 (구현)
   * 작성자에 대해 고유 식별자를 부여하여 동명이인을 구분
   * 작성자는 이름, 이메일, 등록일, 수정일 정보를 가지고 있음
   * 작성자 테이블을 생성하고 일정 테이블에 FK를 생성해 연관관계를 설정
+
 * Lv.4 (구현)
   * 페이지네이션을 사용하여 등록된 일정 목록을 페이지 번호와 크기를 기준으로 모두 조회
 * Lv.5 (구현)
@@ -139,44 +140,39 @@
 # 👉구현결과
 
 <details>
-<summary>구현결과</summary>
+	<summary>일정 작성(POST)</summary>
+	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fr4RQc%2FbtsL4AhIv9q%2FMtHRnM4G1u24Phe57CV9H0%2Fimg.png">
+	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsnbFp%2FbtsL52YmTr4%2FWEMhs9MKUl5Jl7mkJLYdHk%2Fimg.png">
+</details>
 
-	<details>
-		<summary>일정 작성(POST)</summary>
-		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fr4RQc%2FbtsL4AhIv9q%2FMtHRnM4G1u24Phe57CV9H0%2Fimg.png">
-		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsnbFp%2FbtsL52YmTr4%2FWEMhs9MKUl5Jl7mkJLYdHk%2Fimg.png">
-	</details>
-	
-	<details>
-		<summary>조건 일정 조회(GET)</summary>
-		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVoIvO%2FbtsL6X9ECea%2FtMrT4DPLt5KBQ1UTEsqiF0%2Fimg.png">	
-	</details>
-	
-	<details>
-		<summary>전체 일정 조회(GET)</summary>
-		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F4Hiz2%2FbtsL6LhjKu6%2Fe3UdnA3zkXXqWJzEjWjkH0%2Fimg.png">
-		<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdZn1zm%2FbtsL6Ln4et0%2FOtdZRf9CkjrTzYzVkn5x71%2Fimg.png">	
-	</details>
-	
-	<details>
-		<summary>단일 일정 조회(GET)</summary>
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcJMQci%2FbtsL6qdrZ9s%2F5joydw2vVqenKyaPhwqny1%2Fimg.png">
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FFbr04%2FbtsL6t2gzrg%2FIEU5JqthxDGMkFXdfuOlPk%2Fimg.png">
-	</details>
-	
-	
-	<details>
-		<summary>일정 수정(PATCH)</summary>
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FICHlf%2FbtsL50Giikf%2FAC8y6EVGMP2TQq1ROSyoPK%2Fimg.png">
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FoWFSK%2FbtsL5A16GUC%2FrpWCSBjpVlCxShcqvlQQwK%2Fimg.png">
-	</details>
-	
-	<details>
-		<summary>일정 삭제(DELETE)</summary>
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcnyaJz%2FbtsL52qzqgt%2FtgV2pLwb0akA2vMK0yoBNk%2Fimg.png">
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb8fo5w%2FbtsL6b8FaEb%2FF51pjDe6hk7D53FdJGAkWK%2Fimg.png">
-		<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUEeZH%2FbtsL6bnlvx1%2FzEkUUrbvOx0NMQSoa65lH1%2Fimg.png">	
-	</details>
+<details>
+	<summary>조건 일정 조회(GET)</summary>
+	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVoIvO%2FbtsL6X9ECea%2FtMrT4DPLt5KBQ1UTEsqiF0%2Fimg.png">	
+</details>
+
+<details>
+	<summary>전체 일정 조회(GET)</summary>
+	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F4Hiz2%2FbtsL6LhjKu6%2Fe3UdnA3zkXXqWJzEjWjkH0%2Fimg.png">
+	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdZn1zm%2FbtsL6Ln4et0%2FOtdZRf9CkjrTzYzVkn5x71%2Fimg.png">	
+</details>
+
+<details>
+	<summary>단일 일정 조회(GET)</summary>
+ 	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcJMQci%2FbtsL6qdrZ9s%2F5joydw2vVqenKyaPhwqny1%2Fimg.png">
+	<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FFbr04%2FbtsL6t2gzrg%2FIEU5JqthxDGMkFXdfuOlPk%2Fimg.png">
 
 </details>
+
+
+<details>
+	<summary>일정 수정(PATCH)</summary>
+
+</details>
+
+<details>
+	<summary>일정 삭제(DELETE)</summary>
+
+</details>
+
+
 
