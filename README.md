@@ -1,4 +1,4 @@
-# 👉 일정관리 앱 과제 소개
+![image](https://github.com/user-attachments/assets/268fea60-f1d5-4abe-b5b0-7395b1a7aebc)![image](https://github.com/user-attachments/assets/bce81692-50d9-4290-8b3e-a138c79d2422)![image](https://github.com/user-attachments/assets/61f383ee-1ad4-4ec8-bcc5-200541296d6f)# 👉 일정관리 앱 과제 소개
 
 * 프로젝트 명 : Java Spring Boot로 일정관리 앱을 구현해보자
     * 배운 내용을 바탕으로 일정 관리 앱를 구현하는 과제입니다.
@@ -14,54 +14,76 @@
 	* development : JAVA JDK 17, Spring Boot 3.4.2, JDBC, MySQL, swagger 2.3.0
 
 
+
+
 # 👉 Lv.0 - API 명세서, ERD 다이어그램
-<detail>
+
+<details>
   <summary>상세 API 명세서</summary>
   https://flaxen-swan-41e.notion.site/Lv-0-186b649ebbbd80f2a570ccd9ef43adb1
 
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbXXRcj%2FbtsL5lqBqrN%2FDxKeXAU7zx1nhLKZDJuDeK%2Fimg.png">
   <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FGSY81%2FbtsL4zXsuOp%2FnRWNJeYIFP0eHfaLtLhLCK%2Fimg.png">
+</details>
+<details>
+  <summary>ERD 다이어그램</summary>
+
+  <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FxYBKG%2FbtsL4HVfPsc%2FAAcCXU1yuVXs9mTbNqSkT0%2Fimg.png">
+</details>
 
 
-</detail>
+# 👉 트러블슈팅
 
+250131 - Java Spring 일정관리 앱 구현과 트러블슈팅: API 명세서, JDBC 연결, DTO와 Entity, CRUD 구현, 동적쿼리 사용
+
+<https://queenriwon3.tistory.com/101>
+
+250203 - Java Spring 일정관리 앱 구현과 트러블슈팅: API 명세서, 멀티table과 Repository, Paging, @ExceptionHandler, 공통응답, 유효성 검사, Swagger
+
+<https://queenriwon3.tistory.com/102>
 
 
 # 👉 구현 내용
 
-### 필수 구현사항
+<details>
+	<summary>필수 구현사항</summary>
 
+* Lv.0
+  * README.md에 API 명세서 작성하기
+  * README.md에 ERD 다이어그램 작성하기
+  * schedule.sql에 테이블 생성에 필요한 쿼리문 작성하기
 * Lv.1
-  * Scanner를 이용하여 햄버거 메뉴 출력 및 선택하기
+  * 일정 작성 구현(할일, 작성자명, 비밀번호, 작성/수정일 저장)
+  * 전체 일정 조회(수정일과 작성자명에 따른 일정 목록 조회)
+  * 선택 일정 조회
 * Lv.2
-  * MenuItem 클래스 생성하여 이름, 가격, 설명의 필드를 갖습니다.
-  * MenuItem 객체 생성을 통해 이름, 가격, 설명을 세팅합니다.
-  * List를 선언하여 여러 MenuItem을 추가합니다.
-  * main 함수에서 MenuItem 클래스를 활용하여 햄버거 메뉴를 출력합니다.
-* Lv.3
-  * Kiosk클래스를 생성하여 MenuItem을 관리하는 리스트, start함수로 관리합니다.
-  * 키오스크 프로그램을 시작하는 메서드가 구현되여 사용자의 입력에 따라 메뉴를 선택하거나 프로그램을 종료합니다.
-  * 유효하지 않은 입력에 대해 오류 메시지를 출력합니다.
-  * List<MenuItem> menuItems 는 Kiosk 클래스 생성자를 통해 값을 할당합니다.
-* Lv.4
-  * Menu클래스를 만들어 MenuItem을 관리합니다.
-* Lv.5
-  * 캡슐화를 적용하여 MenuItem, Menu 그리고 Kiosk 클래스의 필드에 직접 접근하지 못하도록 설정합니다.
+  * 선택한 일정 수정(비밀번호를 통한 할일, 작성자명 수정)
+  * 선택한 일정 삭제(비밀번호를 통해 삭제)
+ 
+</details>
 
-### 선택 구현사항
+<details>
+	<summary>선택 구현사항</summary>
+ *  Lv.3 (구현)
+  * 작성자에 대해 고유 식별자를 부여하여 동명이인을 구분
+  * 작성자는 이름, 이메일, 등록일, 수정일 정보를 가지고 있음
+  * 작성자 테이블을 생성하고 일정 테이블에 FK를 생성해 연관관계를 설정
+* Lv.4 (구현)
+  * 페이지네이션을 사용하여 등록된 일정 목록을 페이지 번호와 크기를 기준으로 모두 조회
+* Lv.5 (구현)
+  * 예외 상황에 대한 처리를 위해 HTTP 상태코드와 에러 메시지를 포함한 정보를 사용하여 예외를 관리
+  * 수정 삭제시 요청때 보내는 비밀번호가 일치하지 않을 때 예외 발생
+  * 잘못된 정보를 조회하려고 할 때 예외 발생
+  * 이미 삭제된 정보를 조회하려고 할 때 예외 발생
+* LV.6  (구현)
+  * 할일 200자 이내, 필수값 처리
+  * 비밀번호는 필수값 처리
+  * 이메일 형식이 유효한지 확인
+	
+</details>
 
-* Lv.6
-  * 장바구니를 성성하고 관리하는 기능을 제공합니다.(구현)
-  * 메뉴를 클릭하면 장바구니에 추가할 지 물어보고, 입력값에 따라 “추가”, “취소” 처리합니다.(구현)
-  * enum을 사용하여 사용자 유형별 할인율을 관리합니다. (구현)
-  * 제네릭을 활용하여 데이터 유연성을 높이고 재사용이 가능한 코드를 설계합니다. (구현)
-
-  * 람다와 스트림을 활용해 장바구니 조회기능을 제공합니다. (구현)
-  * 장바구니에 담긴 모든 항목과 금액 합계를 출력하고 주문을 진행합니다. 주문하기를 누르면 장바구니를 초기화합니다.(구현)
-  * 사용자가 결제를 하기 전에 장바구니 출력 및 금액을 계산하는 기능을 제공합니다.(구현)
 
 
-![Lv.123456](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FyRGMi%2FbtsLSPxb4Fu%2FLJgHf70WWqrAqTar8F4PC0%2Fimg.png)
 
 
 
@@ -93,20 +115,10 @@
 
 
 
-# 👉 클래스 다이어그램/ 플로우차트
-
-(Lv.1,2,3 다이어그램은 생략)
-
-* KioskProject Lv.4
-
-![KioskProject Lv.4 Diagram](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdaNdTO%2FbtsLRLWJt7K%2FT35j0zg4K6pxspBsYKYTUK%2Fimg.png)
+# 👉 클래스 다이어그램
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOFDXG%2FbtsL4Zg2eLI%2FXvCY8T5SFVT0VlLulhHqQk%2Fimg.png">
 
 
-* KioskProject Lv.6
-
-![KioskProject Lv.6 Diagram1](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdbtzRu%2FbtsLRhVERax%2FKqrYkZj8GKs0XFkpA1AvWk%2Fimg.png)
-
-![KioskProject Lv.6 Diagram2](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc7pJCH%2FbtsLShVhtTL%2FcnV8r8cBZxPGktkdRDeyZ0%2Fimg.png)
 
 
 
@@ -116,69 +128,32 @@
 
 # 👉구현결과
 
-* Lv.1,2,3 과제 결과
+<details>
+<summary>구현 결과</summary>
+	
+* 일정 작성(POST)
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fr4RQc%2FbtsL4AhIv9q%2FMtHRnM4G1u24Phe57CV9H0%2Fimg.png">
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsnbFp%2FbtsL52YmTr4%2FWEMhs9MKUl5Jl7mkJLYdHk%2Fimg.png">
 
-![KioskProject Lv.123 result](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FeNONKB%2FbtsLSTzAJnb%2F3PDMCUOdqlodUIxAk1DZ5K%2Fimg.png)
+* 조건 일정 조회(GET)
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FVoIvO%2FbtsL6X9ECea%2FtMrT4DPLt5KBQ1UTEsqiF0%2Fimg.png">
 
+* 전체 일정 조회(GET)
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F4Hiz2%2FbtsL6LhjKu6%2Fe3UdnA3zkXXqWJzEjWjkH0%2Fimg.png">
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdZn1zm%2FbtsL6Ln4et0%2FOtdZRf9CkjrTzYzVkn5x71%2Fimg.png">
 
+* 단일 일정 조회(GET)
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcJMQci%2FbtsL6qdrZ9s%2F5joydw2vVqenKyaPhwqny1%2Fimg.png">
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FFbr04%2FbtsL6t2gzrg%2FIEU5JqthxDGMkFXdfuOlPk%2Fimg.png">
 
-* Lv.4 과제 결과
+* 일정 수정(PATCH)
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FICHlf%2FbtsL50Giikf%2FAC8y6EVGMP2TQq1ROSyoPK%2Fimg.png">
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FoWFSK%2FbtsL5A16GUC%2FrpWCSBjpVlCxShcqvlQQwK%2Fimg.png">
 
-![KioskProject Lv.4 result1](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FZidgG%2FbtsLSc7J2yK%2FiPpdKSEyCK8Zui6DHIuNPK%2Fimg.png)
-
-![KioskProject Lv.4 result2](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F83PhT%2FbtsLQTac6Bz%2FkwsH9jkyV1d9sRCLkl1ZQ0%2Fimg.png)
-
-
-
-
-
-
-* Lv.6 구현 결과
-
-![KioskProject Lv.6 result1](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FMPEtj%2FbtsLQA24VNT%2FMrkpuh2iONLeC1v6NwsNgK%2Fimg.png)
-
-![KioskProject Lv.6 result2](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbySqk1%2FbtsLSrXE1zH%2FoCj4ki5E45VXzjkDrC9D5k%2Fimg.png)
-
-![KioskProject Lv.6 result3](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdqYyTj%2FbtsLQN8XpZN%2FtpAjXpfVGb0F7fjzkbHgsK%2Fimg.png)
-
-![KioskProject Lv.6 result4](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbLLQSr%2FbtsLROskc3r%2FpxNEq06umbBeUs41OTYAAk%2Fimg.png)
-
-![KioskProject Lv.6 result5](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb7gwaj%2FbtsLSx4ARE9%2F7CqEhtsK2QS8IWM7RlUIDK%2Fimg.png)
-
-![KioskProject Lv.6 result6](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F97c6l%2FbtsLSdr1a0z%2FaODqoR9NzLnqPJqBwOshiK%2Fimg.png)
-
-![KioskProject Lv.6 result7](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FEmem0%2FbtsLSLn2sCt%2FVSUB4jJf8WFY1XtJmjtXr0%2Fimg.png)
-
-![KioskProject Lv.6 result8](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FClzO4%2FbtsLQEj5yVH%2FFxpYkgY7TSO1HNKrAfaTYK%2Fimg.png)
-
-![KioskProject Lv.6 result9](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcCnKuN%2FbtsLQ5uIJWx%2FrRze7P6JSCeRkWDyrcu0F1%2Fimg.png)
-
-![KioskProject Lv.6 result10](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fl17ch%2FbtsLSAAgN0S%2FEMQQuKcrf0Ss1nXs6Lx380%2Fimg.png)
-
-
-
-
-
-
-# 👉 기능소개
-
-Java 기반 계산기 - 구현 코드 및 설명
-
-<https://queenriwon3.tistory.com/89>
-
-
-
-
-
-# 👉 트러블슈팅
-
-
-250114 - Java 키오스크 구현과 트러블슈팅: 카테고리화, 문자열 출력, 제네릭 메서드, indexOf()의 한계
-
-<https://queenriwon3.tistory.com/85>
-
-
-250116 - Java 키오스크 구현과 트러블슈팅: 기능 확장 및 효율성 강화(enum, 람다, stream().forEach(), AtomicInteger, .idea폴더)
-
-<https://queenriwon3.tistory.com/87>
+* 일정 삭제(DELETE)
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcnyaJz%2FbtsL52qzqgt%2FtgV2pLwb0akA2vMK0yoBNk%2Fimg.png">
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb8fo5w%2FbtsL6b8FaEb%2FF51pjDe6hk7D53FdJGAkWK%2Fimg.png">
+<img scr="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUEeZH%2FbtsL6bnlvx1%2FzEkUUrbvOx0NMQSoa65lH1%2Fimg.png">
+ 
+</details>
 
