@@ -1,8 +1,8 @@
 package com.example.scheduleproject.service;
 
 import com.example.scheduleproject.dto.PageResponseDto;
-import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoRequestGetDto;
+import com.example.scheduleproject.dto.TodoRequestPostDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
 import com.example.scheduleproject.entity.UsersEntity;
@@ -16,9 +16,6 @@ import com.example.scheduleproject.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -35,7 +32,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public TodoResponseDto createTodo(TodoRequestDto dto) {
+    public TodoResponseDto createTodo(TodoRequestPostDto dto) {
         if (!dto.areAllNotNull()){
             throw new InvalidRequestException("필수 요청 값을 받지 못함");
         }
@@ -43,12 +40,14 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new NoMatchPasswordConfirmation("비밀번호 확인 불일치");
         }
 
+        TodosEntity todosToMapperEntity = todosToMapper.toEntity(dto);
+
         // 1. UsersRepository에서 userid를 불러옴 (신규 유저일시 users 생성)
         Long userId = usersRepository.findUserIdByEmail(dto.getEmail())
                 .orElseGet(() -> usersRepository.saveUser(dto.getName(), dto.getEmail()));
 
         // 2. 가져온 userid를 이용해 일정 저장
-        TodosEntity todosEntity = todosRepository.createTodo(userId, dto);
+        TodosEntity todosEntity = todosRepository.createTodo(userId, todosToMapperEntity);
 
         // 3. TodoResponseDto 매핑
         return todosToMapper.toDto(todosEntity, dto.getName(), dto.getEmail());
@@ -56,15 +55,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public PageResponseDto<TodoResponseDto> findTodoByNameOrUpdatedAt(TodoRequestGetDto dto, int page, int size) {
-        List<Long> userIdList = new ArrayList<>();
 
-        // 1. name를 입력받을 경우 UsersRepository 사용하여 user name으로 user id값을 가져옴
-        if (dto.getName() != null) {
-            userIdList = usersRepository.findUserIdByName(dto.getName());
-        }
+//        List<Long> userIdList = new ArrayList<>();
 
-        // 2. user id 값과 수정일을 사용해 조회
-        return todosRepository.findTodoByNameAndUpdatedAt(userIdList, dto.getUpdatedAtFrom(), dto.getUpdatedAtTo(), page, size);
+//        // 1. name를 입력받을 경우 UsersRepository 사용하여 user name으로 user id값을 가져옴
+//        if (dto.getUserId() != null) {
+//            userIdList = usersRepository.findUserIdByName(dto.getUserId());
+//        }
+
+//        // 2. user id 값과 수정일을 사용해 조회
+//        return todosRepository.findTodoByNameAndUpdatedAt(userIdList, dto.getUpdatedAtFrom(), dto.getUpdatedAtTo(), page, size);
+
+        return todosRepository.findTodoByNameAndUpdatedAt(dto.getUserId(), dto.getUpdatedAtFrom(), dto.getUpdatedAtTo(), page, size);
     }
 
     @Override

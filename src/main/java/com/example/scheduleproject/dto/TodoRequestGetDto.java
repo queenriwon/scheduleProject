@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class TodoRequestGetDto {
-    private String name;
+    private Long userId;
     private String updatedAtFrom;
     private String updatedAtTo;
 }

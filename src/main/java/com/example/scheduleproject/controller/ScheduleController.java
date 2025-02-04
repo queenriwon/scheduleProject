@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/schedules")
-public class ScheduleControllerImpl{
+public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    public ScheduleControllerImpl(ScheduleService scheduleService) {
+    public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
 
     @PostMapping
-    public ApiResponseDto<TodoResponseDto> createTodo(@Valid @RequestBody TodoRequestDto dto) {
+    public ApiResponseDto<TodoResponseDto> createTodo(@Valid @RequestBody TodoRequestPostDto dto) {
         TodoResponseDto responseDto = scheduleService.createTodo(dto);
         return ApiResponseDto.OK("일정 등록 완료", responseDto);
     }
@@ -52,16 +52,16 @@ public class ScheduleControllerImpl{
     @PatchMapping("/{id}")
     public ApiResponseDto<TodoResponseDto> updateNameAndTodo(
             @PathVariable Long id,
-            @RequestBody TodoRequestDto dto
+            @RequestBody TodoRequestPostDto dto
     ) {
         TodoResponseDto responseDto = scheduleService.updateNameAndTodo(id, dto.getName(), dto.getTodo(), dto.getPassword());
         return ApiResponseDto.OK("아이디 " + id + "의 이름 및 일정 수정 완료", responseDto);
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}/delete")
     public ApiResponseDto<Void> deleteTodoById(
             @PathVariable Long id,
-            @RequestBody TodoRequestDto dto) {
+            @RequestBody TodoRequestPostDto dto) {
         scheduleService.deleteTodoById(id, dto.getPassword());
         return ApiResponseDto.OK("아이디 " + id + "의 일정 삭제 완료");
     }

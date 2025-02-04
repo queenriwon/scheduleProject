@@ -1,6 +1,6 @@
 package com.example.scheduleproject.mapper;
 
-import com.example.scheduleproject.dto.TodoRequestDto;
+import com.example.scheduleproject.dto.TodoRequestPostDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
 import org.mapstruct.Mapper;
@@ -12,5 +12,5 @@ public interface TodosToMapper {
 
     TodoResponseDto toDto(TodosEntity e, String name, String email);
 
-    TodosEntity toEntity(TodoRequestDto dto);
+    TodosEntity toEntity(TodoRequestPostDto dto);
 }

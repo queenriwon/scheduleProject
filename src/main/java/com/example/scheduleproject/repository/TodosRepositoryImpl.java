@@ -1,7 +1,6 @@
 package com.example.scheduleproject.repository;
 
 import com.example.scheduleproject.dto.PageResponseDto;
-import com.example.scheduleproject.dto.TodoRequestDto;
 import com.example.scheduleproject.dto.TodoResponseDto;
 import com.example.scheduleproject.entity.TodosEntity;
 import com.example.scheduleproject.exception.IdNotFoundException;
@@ -29,14 +28,14 @@ public class TodosRepositoryImpl implements TodosRepository {
     }
 
     @Override
-    public TodosEntity createTodo(Long userId, TodoRequestDto dto) {
+    public TodosEntity createTodo(Long userId, TodosEntity entity) {
         SimpleJdbcInsert jdbcInsertTodos = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsertTodos.withTableName("todos").usingGeneratedKeyColumns("id");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("user_id", userId);
-        parameters.put("todo", dto.getTodo());
-        parameters.put("password", dto.getPassword());
+        parameters.put("todo", entity.getTodo());
+        parameters.put("password", entity.getPassword());
         parameters.put("created_at", getNowDatetime());
         parameters.put("updated_at", getNowDatetime());
 
@@ -46,24 +45,29 @@ public class TodosRepositoryImpl implements TodosRepository {
     }
 
     @Override
-    public PageResponseDto<TodoResponseDto> findTodoByNameAndUpdatedAt(List<Long> userIdList, String updatedAtFrom, String updatedAtTo, int page, int size) {
+    public PageResponseDto<TodoResponseDto> findTodoByNameAndUpdatedAt(Long userId, String updatedAtFrom, String updatedAtTo, int page, int size) {
         // 동적쿼리문 생성
         StringBuilder sb = new StringBuilder(
                 "select a.id, b.name, b.email, a.todo, a.created_at, a.updated_at" +
                         " from todos a join users b on a.user_id = b.id where 1=1");
         List<Object> list = new ArrayList<>();
 
-        if (!userIdList.isEmpty()) {
-            sb.append(" and a.user_id IN (");
-            for (int i = 0; i < userIdList.size(); i++) {
-                sb.append("?");
-                if (i < userIdList.size() - 1) {
-                    sb.append(", ");
-                }
-                list.add(userIdList.get(i));
-            }
-            sb.append(")");
+        if (userId != null) {
+            sb.append(" and a.user_id = ");
+            list.add(userId);
         }
+
+//        if (!userIdList.isEmpty()) {
+//            sb.append(" and a.user_id IN (");
+//            for (int i = 0; i < userIdList.size(); i++) {
+//                sb.append("?");
+//                if (i < userIdList.size() - 1) {
+//                    sb.append(", ");
+//                }
+//                list.add(userIdList.get(i));
+//            }
+//            sb.append(")");
+//        }
 
         if (updatedAtFrom != null && updatedAtTo != null) {
             sb.append(" and (date(a.updated_at) between ? and ?)");
